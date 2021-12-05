@@ -1,0 +1,51 @@
+{
+  "name": "rmrk-analyser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "author": "zengsheng",
+  "license": "GPL",
+  "private": true,
+  "scripts": {
+    "start": "pm2 start ecosystem.config.js --env production",
+    "start-in-dev": "pm2 start ecosystem.config.js --env development",
+    "start-in-local": "pm2 start ecosystem.config.js --env local",
+    "dev": "cross-env NODE_ENV=development nodemon --harmony main.js",
+    "check": "cross-env NODE_ENV=production nodemon --harmony main.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "pm2 deploy production"
+  },
+  "dependencies": {
+    "@polkadot/api": "^6.9.2",
+    "amqplib": "^0.6.0",
+    "axios": "^0.21.0",
+    "babel": "^6.23.0",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-stage-3": "^6.22.0",
+    "babel-register": "^6.24.0",
+    "chalk": "^2.3.0",
+    "config-lite": "^3.0.0",
+    "connect-flash": "^0.1.1",
+    "connect-history-api-fallback": "^1.3.0",
+    "cookie-parser": "^1.4.3",
+    "cross-env": "^5.0.0",
+    "crypto-js": "^4.0.0",
+    "decimal.js": "^10.2.1",
+    "express": "^4.15.2",
+    "form-urlencoded": "^4.4.2",
+    "formidable": "^1.1.1",
+    "rascal": "^13.0.0",
+    "rmrk-tools": "^2.0.26",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "nodemon": "^1.18.6"
+  }
+}

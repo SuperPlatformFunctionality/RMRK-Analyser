@@ -7,16 +7,20 @@ const polkadotNodeUrl = config.polkadotNodeUrl;
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
 import { fetchRemarks, getRemarksFromBlocks, getLatestFinalizedBlock, Consolidator } from 'rmrk-tools';
+import InitCatConsolidator from "./InitCatConsolidator";
 const wsProvider = new WsProvider(polkadotNodeUrl);
 let api = null;
+let consolidator = null;
 
 let initPolkadotJs = async function() {
+	console.log("start init polkadot js...");
 	api = await ApiPromise.create({ provider: wsProvider });
 	const systemProperties = await api.rpc.system.properties();
 	const ss58Format = systemProperties.toHuman().ss58Format;
-	const consolidator = new Consolidator(ss58Format);
+	consolidator = new InitCatConsolidator(ss58Format);
+	console.log("end init polkadot js...");
 }
-initPolkadotJs();
+//initPolkadotJs();
 
 class RmrkService {
 	constructor() {
@@ -24,13 +28,17 @@ class RmrkService {
 	}
 
 	async onReceiveRmrkMsg(msgObj) {
+		if(consolidator == null) {
+			await initPolkadotJs();
+		}
 		console.log(msgObj);
 
-		//do consolidation ...to change the current status, do delta change......
+		let oneRmrk = msgObj;
+		let remarks = [];
+		remarks.push(oneRmrk);
 
-//					const { nfts, collections } = await consolidator.consolidate(remarks);
-//					console.log('Consolidated nfts:', nfts);
-//					console.log('Consolidated collections:', collections);
+		//do consolidation ...to change the current status, do delta change......
+		await consolidator.consolidateToDB(remarks);
 
 		return true;
 	}

@@ -2,8 +2,7 @@
 
 module.exports = {
 	port: 26080,
-//	polkadotNodeUrl:"ws://104.198.42.65:9944",
-	polkadotNodeUrl:"wss://kusama-rpc.polkadot.io",
+	polkadotNodeUrl:"ws://104.198.42.65:9944",
 	blockChain:{
 
 	},

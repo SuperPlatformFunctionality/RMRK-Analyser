@@ -1,6 +1,6 @@
 'use strict';
 
-import { fetchRemarks, getRemarksFromBlocks, getLatestFinalizedBlock, Consolidator, OP_TYPES } from 'rmrk-tools';
+import { Consolidator, OP_TYPES } from 'rmrk-tools';
 
 class InitWorldConsolidator extends Consolidator {
 	constructor(ss58Format, dbAdapter, emitEmoteChanges, emitInteractionChanges) {

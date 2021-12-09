@@ -7,7 +7,7 @@ const polkadotNodeUrl = config.polkadotNodeUrl;
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
 import { fetchRemarks, getRemarksFromBlocks, getLatestFinalizedBlock, Consolidator } from 'rmrk-tools';
-import InitCatConsolidator from "./InitCatConsolidator";
+import InitWorldConsolidator from "./InitWorldConsolidator.js";
 const wsProvider = new WsProvider(polkadotNodeUrl);
 let api = null;
 let consolidator = null;
@@ -17,7 +17,7 @@ let initPolkadotJs = async function() {
 	api = await ApiPromise.create({ provider: wsProvider });
 	const systemProperties = await api.rpc.system.properties();
 	const ss58Format = systemProperties.toHuman().ss58Format;
-	consolidator = new InitCatConsolidator(ss58Format);
+	consolidator = new InitWorldConsolidator(ss58Format);
 	console.log("end init polkadot js...");
 }
 //initPolkadotJs();

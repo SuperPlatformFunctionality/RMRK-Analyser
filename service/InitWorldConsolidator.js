@@ -2,7 +2,7 @@
 
 import { fetchRemarks, getRemarksFromBlocks, getLatestFinalizedBlock, Consolidator, OP_TYPES } from 'rmrk-tools';
 
-class InitCatConsolidator extends Consolidator {
+class InitWorldConsolidator extends Consolidator {
 	constructor(ss58Format, dbAdapter, emitEmoteChanges, emitInteractionChanges) {
 		super(ss58Format, dbAdapter, emitEmoteChanges, emitInteractionChanges);
 	}
@@ -129,4 +129,4 @@ class InitCatConsolidator extends Consolidator {
 
 }
 
-export default InitCatConsolidator;
+export default InitWorldConsolidator;

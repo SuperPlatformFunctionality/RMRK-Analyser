@@ -1,6 +1,6 @@
 module.exports = {
   apps : [{
-    name: 'main-app-server',
+    name: 'rmrk-analyzer',
     script: 'main.js',
     instances: 1 ,
     autorestart: true,

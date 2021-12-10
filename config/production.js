@@ -10,7 +10,7 @@ module.exports = {
 		"vhosts": {
 			"/": {
 				"connection": {
-					"url":  "amqp://tydmonitor:123456@127.0.0.1:5672"
+					"url":  "amqp://rmrkmonitor:123456@127.0.0.1:5672"
 				},
 				/*
 				"exchanges": [
@@ -18,7 +18,7 @@ module.exports = {
 				],
 				*/
 				"queues": [
-					"tyd-queue"
+					"rmrk-queue"
 				],
 				/*
 				"bindings": [
@@ -27,12 +27,12 @@ module.exports = {
 				*/
 				"publications": {
 					"tx_monitor_pub": {
-						"queue": "tyd-queue",
+						"queue": "rmrk-queue",
 					}
 				},
 				"subscriptions": {
 					"tx_monitor_sub": {
-						"queue": "tyd-queue",
+						"queue": "rmrk-queue",
 						"prefetch": 1,
 						"contentType": "application/json"
 					}

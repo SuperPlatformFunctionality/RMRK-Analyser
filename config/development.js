@@ -6,6 +6,7 @@ module.exports = {
 	blockChain:{
 
 	},
+	dbUrl:"mysql://root:root@127.0.0.1:3306/initial_world_nft",
 	rabbitMq:{
 		"vhosts": {
 			"/": {

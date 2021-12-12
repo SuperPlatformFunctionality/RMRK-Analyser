@@ -1,4 +1,6 @@
 'use strict';
+import DaoBase from "../dao/DaoBase.js";
+import DaoBasePart from "../dao/DaoBasePart.js"
 
 // temporarily use es6 (compatible with commonjs with babel)
 // need to rewrite with ts
@@ -79,7 +81,16 @@ class InitWorldAdapter {
 //		return (this.collections[collection.id] = collection);
 	}
 	async updateBase(base) {
-//		return (this.bases[base.getId()] = Object.assign(Object.assign({}, base), { id: base.getId() }));
+		//		return (this.bases[base.getId()] = Object.assign(Object.assign({}, base), { id: base.getId() }));
+		let tempBase = Object.assign(Object.assign({}, base), { id: base.getId() });
+		console.log("do update base");
+		await DaoBase.createNewBaseRecord(tempBase.id, tempBase.issuer, tempBase.symbol, tempBase.type, tempBase.block);
+		let parts = tempBase.parts;
+		for(let i = 0 ; i < parts.length ; i++) {
+			let tempPart = parts[i];
+			await DaoBasePart.createNewBasePartRecord(tempBase.id, tempPart.id, tempPart.type, tempPart.src, tempPart.z);
+		}
+		return tempBase;
 	}
 	async updateBaseThemeAdd(base, consolidatedBase) {
 //		this.bases[consolidatedBase.id] = Object.assign(Object.assign({}, this.bases[consolidatedBase.id]), { themes: base === null || base === void 0 ? void 0 : base.themes });
@@ -103,7 +114,8 @@ class InitWorldAdapter {
 		return this.nfts[id];
 	}
 	async getBaseById(id) {
-		return this.bases[id];
+		//return this.bases[id]; //create cache?
+		return DaoBase.getBaseRecordsById(id);
 	}
 }
 

@@ -32,7 +32,7 @@ class RmrkService {
 		if(consolidator == null) {
 			await initPolkadotJs();
 		}
-		console.log(msgObj);
+//		console.log("received msg:", msgObj);
 
 		let oneRmrk = msgObj;
 		let remarks = [];

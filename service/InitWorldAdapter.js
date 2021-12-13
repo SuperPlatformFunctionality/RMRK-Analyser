@@ -1,6 +1,10 @@
 'use strict';
 import DaoBase from "../dao/DaoBase.js";
 import DaoBasePart from "../dao/DaoBasePart.js"
+import DaoBasePartEquippable from "../dao/DaoBasePartEquippable.js"
+
+import ResponseCode from "../utils/ResponseCode";
+import ResponseCodeError from "../utils/ResponseCodeError";
 
 // temporarily use es6 (compatible with commonjs with babel)
 // need to rewrite with ts
@@ -83,12 +87,26 @@ class InitWorldAdapter {
 	async updateBase(base) {
 		//		return (this.bases[base.getId()] = Object.assign(Object.assign({}, base), { id: base.getId() }));
 		let tempBase = Object.assign(Object.assign({}, base), { id: base.getId() });
-		console.log("do update base");
-		await DaoBase.createNewBaseRecord(tempBase.id, tempBase.issuer, tempBase.symbol, tempBase.type, tempBase.block);
-		let parts = tempBase.parts;
-		for(let i = 0 ; i < parts.length ; i++) {
-			let tempPart = parts[i];
-			await DaoBasePart.createNewBasePartRecord(tempBase.id, tempPart.id, tempPart.type, tempPart.src, tempPart.z);
+		let ok = false;
+		try {
+			await DaoBase.createNewBaseRecord(tempBase.id, tempBase.issuer, tempBase.symbol, tempBase.type, tempBase.block);
+			let parts = tempBase.parts;
+			for(let i = 0 ; i < parts.length ; i++) {
+				let tempPart = parts[i];
+				await DaoBasePart.createNewBasePartRecord(tempBase.id, tempPart.id, tempPart.type, tempPart.src, tempPart.z);
+				if(tempPart.type == "slot" && tempPart.equippable.length > 0) {
+					for(let j=0 ; j<tempPart.equippable.length ; j++) {
+						let tempEquipCollectionId = tempPart.equippable[j];
+						await DaoBasePartEquippable.createNewBasePartEquippableRecord(tempBase.id, tempPart.id, tempEquipCollectionId);
+					}
+				}
+			}
+			ok = true;
+		} catch (e) {
+			console.log(e);
+		}
+		if(!ok) {
+			throw new ResponseCodeError(ResponseCode.SYSTEM_ERROR);
 		}
 		return tempBase;
 	}

@@ -5,7 +5,8 @@ let sequelize = lindb.sequelize;
 const DaoBasePart = sequelize.define('DaoBasePart', {
 	baseId:{
 		type:DataTypes.STRING(42),
-			field:"base_id"
+		primaryKey:true,
+		field:"base_id"
 	},
 	id: {
 		type:DataTypes.STRING(48),
@@ -59,7 +60,7 @@ async function createNewBasePartRecord(baseId, id, type, src, z, transaction) {
     return newRecordObj;
 }
 
-async function getBasePartRecordsByMBaseIdAndId(baseId, id, transaction, forUpdate) {
+async function getBasePartRecordsByBaseIdAndId(baseId, id, transaction, forUpdate) {
     let options = {
         where: {
 			baseId: baseId,
@@ -85,4 +86,4 @@ async function getBasePartRecordsByMBaseIdAndId(baseId, id, transaction, forUpda
 }
 
 exports.createNewBasePartRecord = createNewBasePartRecord;
-exports.getBasePartRecordsByMBaseIdAndId = getBasePartRecordsByMBaseIdAndId;
+exports.getBasePartRecordsByBaseIdAndId = getBasePartRecordsByBaseIdAndId;

@@ -50,7 +50,7 @@ async function createNewBaseRecord(id, issuer, symbol, type, block, transaction)
 		block:block
     },{
         transaction:transaction,
-        logging:true
+        logging:false
     });
     let newBaseObj = null;
     if(newBaseModel != null) {
@@ -80,24 +80,6 @@ async function getBaseRecordsById(id, transaction, forUpdate) {
 	}
 	return tgtRecordObj;
 }
-
-/*
-async function setInvestRecordStatusByRecordId(recordId, newStatus) {
-	let retArray = await InvestRecordDao.update({
-		status:newStatus,
-	},{
-		where:{
-			recordId: recordId
-		},
-		logging:false
-	});
-	let affectedRow = retArray[0];
-	if(affectedRow > 1) {
-		console.log("update multiple record's status, it is impossible");
-	}
-	return true;
-}
-*/
 
 exports.createNewBaseRecord = createNewBaseRecord;
 exports.getBaseRecordsById = getBaseRecordsById;

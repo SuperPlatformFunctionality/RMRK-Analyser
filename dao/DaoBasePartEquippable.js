@@ -5,11 +5,13 @@ let sequelize = lindb.sequelize;
 const DaoBasePartEquippable = sequelize.define('DaoBasePartEquippable', {
 	baseId: {
 		type:DataTypes.STRING(48),
+		primaryKey:true,
 		field:"base_id"
 	},
 	partId: {
 		type:DataTypes.STRING(48),
-		field:"party_id"
+		primaryKey:true,
+		field:"part_id"
 	},
 	collectionId:{
 		type:DataTypes.STRING(48),
@@ -21,10 +23,10 @@ const DaoBasePartEquippable = sequelize.define('DaoBasePartEquippable', {
     timestamps: false
 });
 
-async function createNewBasePartEquippableRecord(baseId, partyId, collectionId, transaction) {
+async function createNewBasePartEquippableRecord(baseId, partId, collectionId, transaction) {
     let newRecordModel = await DaoBasePartEquippable.create({
 		baseId:baseId,
-		partyId:partyId,
+		partId:partId,
 		collectionId:collectionId
     },{
         transaction:transaction,

@@ -39,3 +39,15 @@ CREATE TABLE `base_part_equippable` (
     PRIMARY KEY `pk_base_id_part_id`(`base_id`,`part_id`) USING HASH,
     INDEX `pk_base_id`(`base_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `collection` (
+    `id` varchar(48) NOT NULL,
+    `issuer` varchar(48) NOT NULL,
+    `symbol` varchar(48) NOT NULL,
+    `max` int(11) unsigned NOT NULL DEFAULT '0',
+    `metadata` varchar(255) NOT NULL DEFAULT '',
+    `block` int(11) unsigned NOT NULL,
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY `pk_id`(`id`) USING HASH,
+    INDEX `idx_issuer`(`issuer`) USING HASH
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

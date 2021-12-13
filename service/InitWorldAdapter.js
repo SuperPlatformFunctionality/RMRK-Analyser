@@ -2,6 +2,7 @@
 import DaoBase from "../dao/DaoBase.js";
 import DaoBasePart from "../dao/DaoBasePart.js"
 import DaoBasePartEquippable from "../dao/DaoBasePartEquippable.js"
+import DaoCollection from "../dao/DaoCollection.js"
 
 import ResponseCode from "../utils/ResponseCode";
 import ResponseCodeError from "../utils/ResponseCodeError";
@@ -82,10 +83,21 @@ class InitWorldAdapter {
 //		this.nfts[nft.getId()] = Object.assign(Object.assign({}, nft), { symbol: nft.symbol, id: nft.getId() });
 	}
 	async updateCollectionMint(collection) {
-//		return (this.collections[collection.id] = collection);
+		/*
+		return (this.collections[collection.id] = collection);
+		*/
+		try {
+			await DaoCollection.createNewCollectionRecord(collection.id, collection.issuer,
+														collection.symbol, collection.max,
+														collection.metadata, collection.block);
+		} catch (e) {
+			console.log(e);
+		}
 	}
 	async updateBase(base) {
-		//		return (this.bases[base.getId()] = Object.assign(Object.assign({}, base), { id: base.getId() }));
+		/*
+		return (this.bases[base.getId()] = Object.assign(Object.assign({}, base), { id: base.getId() }));
+		*/
 		let tempBase = Object.assign(Object.assign({}, base), { id: base.getId() });
 		let ok = false;
 		try {
@@ -123,7 +135,10 @@ class InitWorldAdapter {
 		return this.nfts[id];
 	}
 	async getCollectionById(id) {
+		/*
 		return this.collections[id];
+		*/
+		return DaoCollection.getCollectionRecordsById(id);
 	}
 	/**
 	 * Find existing NFT by id
@@ -132,7 +147,9 @@ class InitWorldAdapter {
 		return this.nfts[id];
 	}
 	async getBaseById(id) {
-		//return this.bases[id]; //create cache?
+		/*
+		return this.bases[id]; //create cache?
+		*/
 		return DaoBase.getBaseRecordsById(id);
 	}
 }

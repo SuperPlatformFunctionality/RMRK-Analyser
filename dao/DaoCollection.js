@@ -4,7 +4,7 @@ let sequelize = lindb.sequelize;
 
 const DaoCollection = sequelize.define('DaoCollection', {
     id: {
-		type:DataTypes.STRING(48),
+		type:DataTypes.STRING(96),
         primaryKey:true,
         field:"id"
     },
@@ -24,6 +24,11 @@ const DaoCollection = sequelize.define('DaoCollection', {
 		type:DataTypes.STRING(255),
 		field:"metadata"
 	},
+	/*
+	properties :{
+
+	}
+	*/
 	block:{
 		type:DataTypes.INTEGER.UNSIGNED,
 		field:"block"

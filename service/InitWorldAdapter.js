@@ -3,6 +3,7 @@ import DaoBase from "../dao/DaoBase.js";
 import DaoBasePart from "../dao/DaoBasePart.js"
 import DaoBasePartEquippable from "../dao/DaoBasePartEquippable.js"
 import DaoCollection from "../dao/DaoCollection.js"
+import DaoNFT from "../dao/DaoNFT.js"
 
 import ResponseCode from "../utils/ResponseCode";
 import ResponseCodeError from "../utils/ResponseCodeError";
@@ -81,6 +82,19 @@ class InitWorldAdapter {
 	}
 	async updateNFTMint(nft) {
 //		this.nfts[nft.getId()] = Object.assign(Object.assign({}, nft), { symbol: nft.symbol, id: nft.getId() });
+		let tempNFT = Object.assign(Object.assign({}, nft), { symbol: nft.symbol, id: nft.getId() });
+		try {
+			await DaoNFT.createNewNFTRecord(tempNFT.id,
+											tempNFT.block, tempNFT.collection, tempNFT.symbol, tempNFT.sn,
+											tempNFT.owner, tempNFT.metadata);
+			console.log(`when nft ${tempNFT.id} mint`);
+			console.log(`resources:`, tempNFT.resources);
+			console.log(`priority:`, tempNFT.priority);
+			console.log(`children:`, tempNFT.children);
+			console.log(`\n`);
+		} catch (e) {
+			console.log(e);
+		}
 	}
 	async updateCollectionMint(collection) {
 		/*
@@ -132,7 +146,8 @@ class InitWorldAdapter {
 //		this.bases[consolidatedBase.id] = Object.assign(Object.assign({}, this.bases[consolidatedBase.id]), { issuer: base === null || base === void 0 ? void 0 : base.issuer, changes: base === null || base === void 0 ? void 0 : base.changes });
 	}
 	async getNFTById(id) {
-		return this.nfts[id];
+		//return this.nfts[id];
+		return await DaoNFT.getNFTRecordsById(id);
 	}
 	async getCollectionById(id) {
 		/*
@@ -144,7 +159,8 @@ class InitWorldAdapter {
 	 * Find existing NFT by id
 	 */
 	async getNFTByIdUnique(id) {
-		return this.nfts[id];
+		//return this.nfts[id];
+		return await DaoNFT.getNFTRecordsById(id);
 	}
 	async getBaseById(id) {
 		/*

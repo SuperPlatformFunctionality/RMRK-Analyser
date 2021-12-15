@@ -41,7 +41,7 @@ CREATE TABLE `base_part_equippable` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `collection` (
-    `id` varchar(48) NOT NULL,
+    `id` varchar(96) NOT NULL,
     `issuer` varchar(48) NOT NULL,
     `symbol` varchar(48) NOT NULL,
     `max` int(11) unsigned NOT NULL DEFAULT '0',
@@ -51,3 +51,25 @@ CREATE TABLE `collection` (
     PRIMARY KEY `pk_id`(`id`) USING HASH,
     INDEX `idx_issuer`(`issuer`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `nft` (
+    `id` varchar(128) NOT NULL,
+    `block` int(10) unsigned NOT NULL,
+    `collection` varchar(48) NOT NULL,
+    `symbol` varchar(48) NOT NULL,
+    `sn`    varchar(8) NOT NULL,
+    `owner` varchar(48) NOT NULL,
+    `metadata` varchar(255) NOT NULL DEFAULT '',
+    `transferable` int(10) NOT NULL DEFAULT '1',
+    `pending` tinyint(4) NOT NULL DEFAULT '0',
+    `forsale` int(10) NOT NULL DEFAULT '0',
+    `burned` int(10) NOT NULL DEFAULT '0',
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY `pk_id`(`id`) USING HASH,
+    INDEX `idx_collection`(`collection`) USING HASH,
+    INDEX `idx_owner`(`owner`) USING HASH
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- resource表
+-- priority表
+-- children表

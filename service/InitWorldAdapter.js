@@ -6,6 +6,7 @@ import DaoCollection from "../dao/DaoCollection.js"
 import DaoNFT from "../dao/DaoNFT.js"
 import DaoNFTResource from "../dao/DaoNFTResource.js"
 import DaoNFTResourceBasePart from "../dao/DaoNFTResourceBasePart.js"
+import DaoNFTPriority from "../dao/DaoNFTPriority.js"
 
 import ResponseCode from "../utils/ResponseCode";
 import ResponseCodeError from "../utils/ResponseCodeError";
@@ -71,11 +72,12 @@ class InitWorldAdapter {
 				priority: (nft === null || nft === void 0 ? void 0 : nft.priority) || this.nfts[consolidatedNFT.id].priority
 			});
 		try {
+			//save resource to db
 			let newResources = newNftInst.resources;
 			if(newResources && newResources.length > 0) {
 				for(let i = 0 ; i < newResources.length ; i++) {
 					let resItem = newResources[i];
-					let existResItem = await DaoNFTResource.getNFTResourceRecordsByNftIdAndId(consolidatedNFT.id, resItem.id);
+					let existResItem = await DaoNFTResource.getNFTResourceRecordByNftIdAndId(consolidatedNFT.id, resItem.id);
 					if(existResItem == null) {
 						await DaoNFTResource.createNewNFTResourceRecord(consolidatedNFT.id, resItem.id,
 							resItem.base,
@@ -89,6 +91,22 @@ class InitWorldAdapter {
 					}
 				}
 			}
+
+			//save priority to db
+			let newPriority = newNftInst.priority;
+			if(newPriority && newPriority.length > 0) {
+				for (let i = 0 ; i < newPriority.length ; i++) {
+					let newOrder = i;
+					let newResourceId = newPriority[i];
+					let existPriorityItem = await DaoNFTPriority.getNFTPriorityRecordByNftIdAndResourceId(consolidatedNFT.id, newResourceId);
+					if(existPriorityItem == null) {
+						await DaoNFTPriority.createNewNFTPriority(consolidatedNFT.id, newResourceId, newOrder);
+					} else {
+						await DaoNFTPriority.updateNFTPriorityRecordOrderByNftIdAndResourceId(consolidatedNFT.id, newResourceId, newOrder);
+					}
+				}
+			}
+
 		}
 		catch (e) {
 			console.log(e);
@@ -211,9 +229,8 @@ class InitWorldAdapter {
 	async _getNFTAndAllSubInfo(id) {
 		let tgtNft = await DaoNFT.getNFTRecordsById(id);
 		if(tgtNft != null) {
-			// resources
+			// load resources from db
 			let resources = await DaoNFTResource.getNFTResourceRecordsByNftId(id);
-			tgtNft.resources = resources;
 			for(let i = 0 ; i < resources.length ; i++) {
 				let tempRes = resources[i];
 				if(tempRes.base != null) {
@@ -223,9 +240,18 @@ class InitWorldAdapter {
 					//the resource is media or others
 				}
 			}
+			tgtNft.resources = resources;
 
-			// priority, need to load from db
-			tgtNft.priority = [];
+			// load priority from db
+			let priorityRecs = await DaoNFTPriority.getNFTPriorityRecordsByNftId(id);
+			priorityRecs = priorityRecs.sort(function (a ,b) {
+				return b.order - a.order;
+			});
+			let priority = [];
+			for(let i = 0 ; i < priorityRecs.length ; i++) {
+				priority.push(priorityRecs[i].resourceId);
+			}
+			tgtNft.priority = priority;
 
 			// children
 			// logic

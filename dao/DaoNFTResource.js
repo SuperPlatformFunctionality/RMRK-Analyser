@@ -54,7 +54,7 @@ async function createNewNFTResourceRecord(nftId, id, base, src, metadata, transa
     return newNFTResObj;
 }
 
-async function getNFTResourceRecordsByNftIdAndId(nftId, id, transaction, forUpdate) {
+async function getNFTResourceRecordByNftIdAndId(nftId, id, transaction, forUpdate) {
 	let options = {
 		where: {
 			nftId:nftId,
@@ -103,5 +103,5 @@ async function getNFTResourceRecordsByNftId(nftId, transaction, forUpdate) {
 }
 
 exports.createNewNFTResourceRecord = createNewNFTResourceRecord;
-exports.getNFTResourceRecordsByNftIdAndId = getNFTResourceRecordsByNftIdAndId;
+exports.getNFTResourceRecordByNftIdAndId = getNFTResourceRecordByNftIdAndId;
 exports.getNFTResourceRecordsByNftId = getNFTResourceRecordsByNftId;

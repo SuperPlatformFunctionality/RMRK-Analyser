@@ -98,10 +98,11 @@ CREATE TABLE `nft_resource_base_part` (
 
 -- item is nft.priority[i]
 CREATE TABLE `nft_priority` (
-    `nft_id` varchar(48) NOT NULL,
+    `nft_id` varchar(128) NOT NULL,
     `resource_id` varchar(48) NOT NULL,
     `order` int(10) NOT NULL,
-    PRIMARY KEY `pk_nft_id`(`nft_id`) USING HASH
+    PRIMARY KEY `pk_nft_id_res_id`(`nft_id`, `resource_id`) USING HASH,
+    INDEX `idx_resource_id`(`resource_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

@@ -4,6 +4,8 @@ import DaoBasePart from "../dao/DaoBasePart.js"
 import DaoBasePartEquippable from "../dao/DaoBasePartEquippable.js"
 import DaoCollection from "../dao/DaoCollection.js"
 import DaoNFT from "../dao/DaoNFT.js"
+import DaoNFTResource from "../dao/DaoNFTResource.js"
+import DaoNFTResourceBasePart from "../dao/DaoNFTResourceBasePart.js"
 
 import ResponseCode from "../utils/ResponseCode";
 import ResponseCodeError from "../utils/ResponseCodeError";
@@ -54,7 +56,44 @@ class InitWorldAdapter {
 		}
 	}
 	async updateNftResadd(nft, consolidatedNFT) {
-//		this.nfts[consolidatedNFT.id] = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]), { resources: nft === null || nft === void 0 ? void 0 : nft.resources, priority: (nft === null || nft === void 0 ? void 0 : nft.priority) || this.nfts[consolidatedNFT.id].priority });
+		/*
+			this.nfts[consolidatedNFT.id] =
+				Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]),
+					{
+						resources: nft === null || nft === void 0 ? void 0 : nft.resources,
+						priority: (nft === null || nft === void 0 ? void 0 : nft.priority) || this.nfts[consolidatedNFT.id].priority
+					});
+
+		*/
+		let newNftInst = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]),
+			{
+				resources: nft === null || nft === void 0 ? void 0 : nft.resources,
+				priority: (nft === null || nft === void 0 ? void 0 : nft.priority) || this.nfts[consolidatedNFT.id].priority
+			});
+		try {
+			let newResources = newNftInst.resources;
+			if(newResources && newResources.length > 0) {
+				for(let i = 0 ; i < newResources.length ; i++) {
+					let resItem = newResources[i];
+					let existResItem = await DaoNFTResource.getNFTResourceRecordsByNftIdAndId(consolidatedNFT.id, resItem.id);
+					if(existResItem == null) {
+						await DaoNFTResource.createNewNFTResourceRecord(consolidatedNFT.id, resItem.id,
+							resItem.base,
+							resItem.src, resItem.metadata);
+						if(resItem.base != null) {
+							for(let i= 0 ; i < resItem.parts.length ; i++) {
+								let tempResBasePart = resItem.parts[i];
+								await DaoNFTResourceBasePart.createNewNFTResourceBasePart(consolidatedNFT.id, resItem.id, tempResBasePart);
+							}
+						}
+					}
+				}
+			}
+		}
+		catch (e) {
+			console.log(e);
+		}
+
 	}
 	async updateNFTChildrenRootOwner(nft, rootowner, level) {
 		/*
@@ -87,11 +126,11 @@ class InitWorldAdapter {
 			await DaoNFT.createNewNFTRecord(tempNFT.id,
 											tempNFT.block, tempNFT.collection, tempNFT.symbol, tempNFT.sn,
 											tempNFT.owner, tempNFT.metadata);
-			console.log(`when nft ${tempNFT.id} mint`);
-			console.log(`resources:`, tempNFT.resources);
-			console.log(`priority:`, tempNFT.priority);
-			console.log(`children:`, tempNFT.children);
-			console.log(`\n`);
+//			console.log(`when nft ${tempNFT.id} mint`);
+//			console.log(`resources:`, tempNFT.resources);
+//			console.log(`priority:`, tempNFT.priority);
+//			console.log(`children:`, tempNFT.children);
+//			console.log(`\n`);
 		} catch (e) {
 			console.log(e);
 		}
@@ -147,7 +186,7 @@ class InitWorldAdapter {
 	}
 	async getNFTById(id) {
 		//return this.nfts[id];
-		return await DaoNFT.getNFTRecordsById(id);
+		return await this._getNFTAndAllSubInfo(id);
 	}
 	async getCollectionById(id) {
 		/*
@@ -160,13 +199,38 @@ class InitWorldAdapter {
 	 */
 	async getNFTByIdUnique(id) {
 		//return this.nfts[id];
-		return await DaoNFT.getNFTRecordsById(id);
+		return await this._getNFTAndAllSubInfo(id);
 	}
 	async getBaseById(id) {
 		/*
 		return this.bases[id]; //create cache?
 		*/
 		return DaoBase.getBaseRecordsById(id);
+	}
+
+	async _getNFTAndAllSubInfo(id) {
+		let tgtNft = await DaoNFT.getNFTRecordsById(id);
+		if(tgtNft != null) {
+			// resources
+			let resources = await DaoNFTResource.getNFTResourceRecordsByNftId(id);
+			tgtNft.resources = resources;
+			for(let i = 0 ; i < resources.length ; i++) {
+				let tempRes = resources[i];
+				if(tempRes.base != null) {
+					//the resource is base
+					tempRes.parts = await DaoNFTResourceBasePart.getNFTResourceBasePartsByNftIdAndResourceId(tgtNft.id, tempRes.id);
+				} else {
+					//the resource is media or others
+				}
+			}
+
+			// priority, need to load from db
+			tgtNft.priority = [];
+
+			// children
+			// logic
+		}
+		return tgtNft;
 	}
 }
 

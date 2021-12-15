@@ -17,6 +17,7 @@ CREATE TABLE `base` (
     INDEX `idx_issuer`(`issuer`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- item is base.parts[i]
 CREATE TABLE `base_part` (
     `base_id` varchar(48) NOT NULL, -- need a foreigner key?
     `id` varchar(48) NOT NULL,
@@ -31,6 +32,7 @@ CREATE TABLE `base_part` (
     INDEX `idx_base_id`(`base_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- item is base.parts[i].equippable[j], and base.parts[i] must be slot part
 CREATE TABLE `base_part_equippable` (
     `base_id` varchar(48) NOT NULL,
     `part_id` varchar(48) NOT NULL,
@@ -70,6 +72,37 @@ CREATE TABLE `nft` (
     INDEX `idx_owner`(`owner`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- resource表
--- priority表
+-- items is nft.resources[i]
+CREATE TABLE `nft_resource` (
+    `nft_id` varchar(128) NOT NULL,
+    `id` varchar(128) NOT NULL,
+
+    `base` varchar(48) DEFAULT NULL,
+    -- parts
+
+    `src` varchar(255) DEFAULT NULL,
+    `metadata` varchar(255) DEFAULT NULL,
+
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY `pk_nft_id_id`(`nft_id`,`id`) USING HASH,
+    INDEX `idx_nft_id`(`nft_id`) USING HASH
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- item is nft.resources[i].parts[j], and nft.resource[i] must be a base, not a media or others
+CREATE TABLE `nft_resource_base_part` (
+    `nft_id` varchar(48) NOT NULL,
+    `resource_id` varchar(48) NOT NULL,
+    `part_id` varchar(48) NOT NULL,
+    PRIMARY KEY `pk_nft_id_id`(`nft_id`,`resource_id`,`part_id`) USING HASH
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- item is nft.priority[i]
+CREATE TABLE `nft_priority` (
+    `nft_id` varchar(48) NOT NULL,
+    `resource_id` varchar(48) NOT NULL,
+    `order` int(10) NOT NULL,
+    PRIMARY KEY `pk_nft_id`(`nft_id`) USING HASH
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- children表

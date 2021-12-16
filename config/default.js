@@ -4,6 +4,7 @@ module.exports = {
 	port: 26080,
 //	polkadotNodeUrl:"ws://104.198.42.65:9944",
 	polkadotNodeUrl:"ws://127.0.0.1:9944",
+	ss58Format:0, //0-polkadot, 2-kusama, 42-substract network
 	blockChain:{
 
 	},

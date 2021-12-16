@@ -114,5 +114,30 @@ async function getNFTRecordsById(id, transaction, forUpdate) {
 	return tgtRecordObj;
 }
 
+async function getNFTIdsByOwner(owner, transaction, forUpdate) {
+	let options = {
+		attributes:["id"],
+		where: {
+			owner: owner
+		},
+		logging:console.log
+	}
+	if(transaction != null) {
+		options.transaction = transaction;
+		if(forUpdate != null) {
+			options.lock = forUpdate?transaction.LOCK.UPDATE:transaction.LOCK.SHARE;
+		}
+	}
+
+	let tgtModels = await DaoNFT.findAll(options);
+	let nftIds = [];
+	for(let i = 0 ; i < tgtModels.length; i++) {
+		nftIds.push(tgtModels[i].toJSON().id);
+	}
+	return nftIds;
+
+}
+
 exports.createNewNFTRecord = createNewNFTRecord;
 exports.getNFTRecordsById = getNFTRecordsById;
+exports.getNFTIdsByOwner = getNFTIdsByOwner;

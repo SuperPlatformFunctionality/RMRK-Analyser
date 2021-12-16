@@ -17,7 +17,8 @@ let initPolkadotJs = async function() {
 	console.log("start init polkadot js...");
 	api = await ApiPromise.create({ provider: wsProvider });
 	const systemProperties = await api.rpc.system.properties();
-	const ss58Format = systemProperties.toHuman().ss58Format;
+	let ss58Format = systemProperties.toHuman().ss58Format;
+	ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama
 	consolidator = new InitWorldConsolidator(ss58Format, new InitWorldAdapter());
 	console.log("end init polkadot js...");
 }

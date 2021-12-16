@@ -120,7 +120,7 @@ async function getNFTIdsByOwner(owner, transaction, forUpdate) {
 		where: {
 			owner: owner
 		},
-		logging:console.log
+		logging:false
 	}
 	if(transaction != null) {
 		options.transaction = transaction;

@@ -62,9 +62,6 @@ async function createNewBasePartRecord(baseId, id, type, src, z, transaction) {
 
 async function getBasePartRecordByBaseIdAndId(baseId, id, transaction, forUpdate) {
 	let options = {
-		attributes :{
-//			exclude:['base_id', baseId] // do not work, why?
-		},
 		where: {
 			baseId: baseId,
 			id : id
@@ -88,6 +85,9 @@ async function getBasePartRecordByBaseIdAndId(baseId, id, transaction, forUpdate
 
 async function getBasePartRecordsByBaseId(baseId, transaction, forUpdate) {
     let options = {
+		attributes :{
+			exclude:['baseId']
+		},
         where: {
 			baseId: baseId
         },

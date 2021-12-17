@@ -79,6 +79,9 @@ async function getNFTResourceRecordByNftIdAndId(nftId, id, transaction, forUpdat
 
 async function getNFTResourceRecordsByNftId(nftId, transaction, forUpdate) {
     let options = {
+		attributes:{
+			exclude: ["nftId"]
+		},
         where: {
 			nftId: nftId
         },

@@ -56,13 +56,12 @@ async function getNFTResourceBasePartsByNftIdAndResourceId(nftId, resourceId, tr
 	}
 
 	let tgtModels = await DaoNFTResourceBasePart.findAll(options);
-	let tgtObjs = [];
+	let partIds = [];
 	for(let i = 0 ; i < tgtModels.length; i++) {
-		let tmpModel = tgtModels[i];
-		let tmpObj = tmpModel.toJSON();
-		tgtObjs.push(tmpObj);
+		partIds.push(tgtModels[i].toJSON().partId);
 	}
-	return tgtObjs;
+
+	return partIds;
 }
 
 exports.createNewNFTResourceBasePart = createNewNFTResourceBasePart;

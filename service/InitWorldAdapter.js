@@ -14,6 +14,13 @@ import ResponseCodeError from "../utils/ResponseCodeError";
 // temporarily use es6 (compatible with commonjs with babel)
 // need to rewrite with ts
 class InitWorldAdapter {
+	static getInstance() {
+		if (!InitWorldAdapter.iwaInstance) {
+			InitWorldAdapter.iwaInstance = new InitWorldAdapter();
+		}
+		return InitWorldAdapter.iwaInstance;
+	}
+
 	constructor() {
 //		super();
 		this.nfts = {};
@@ -223,7 +230,18 @@ class InitWorldAdapter {
 		/*
 		return this.bases[id]; //create cache?
 		*/
-		return DaoBase.getBaseRecordsById(id);
+		let tgtBase = await DaoBase.getBaseRecordsById(id);
+		if(tgtBase != null) {
+			let parts = await DaoBasePart.getBasePartRecordsByBaseId(id);
+			for(let i = 0 ; i < parts.length ; i++) {
+				let tmpPart = parts[i];
+				if(tmpPart.type == "slot") {
+					tmpPart.equippable = await DaoBasePartEquippable.getCollectionIdsByBaseIdAndPartId(tgtBase.id, tmpPart.id);
+				}
+			}
+			tgtBase.parts = parts;
+		}
+		return tgtBase;
 	}
 
 	async _getNFTAndAllSubInfo(id) {
@@ -260,4 +278,6 @@ class InitWorldAdapter {
 	}
 }
 
+//call once to create the instance
+InitWorldAdapter.getInstance();
 export default InitWorldAdapter;

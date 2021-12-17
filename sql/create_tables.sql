@@ -28,8 +28,7 @@ CREATE TABLE `base_part` (
     -- equippable list is in table base_part_equippable
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     -- base id 和 id 组成主键
-    PRIMARY KEY `pk_base_id_id`(`base_id`,`id`) USING HASH,
-    INDEX `idx_base_id`(`base_id`) USING HASH
+    PRIMARY KEY `pk_base_id_id`(`base_id`,`id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- item is base.parts[i].equippable[j], and base.parts[i] must be slot part
@@ -38,8 +37,7 @@ CREATE TABLE `base_part_equippable` (
     `part_id` varchar(48) NOT NULL,
     `collection_id` varchar(48) NOT NULL,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY `pk_base_id_part_id`(`base_id`,`part_id`) USING HASH,
-    INDEX `pk_base_id`(`base_id`) USING HASH
+    PRIMARY KEY `pk_base_id_part_id`(`base_id`,`part_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `collection` (
@@ -84,8 +82,7 @@ CREATE TABLE `nft_resource` (
     `metadata` varchar(255) DEFAULT NULL,
 
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY `pk_nft_id_id`(`nft_id`,`id`) USING HASH,
-    INDEX `idx_nft_id`(`nft_id`) USING HASH
+    PRIMARY KEY `pk_nft_id_id`(`nft_id`,`id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- item is nft.resources[i].parts[j], and nft.resource[i] must be a base, not a media or others

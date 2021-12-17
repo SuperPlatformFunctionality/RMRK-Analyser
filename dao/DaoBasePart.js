@@ -60,11 +60,36 @@ async function createNewBasePartRecord(baseId, id, type, src, z, transaction) {
     return newRecordObj;
 }
 
-async function getBasePartRecordsByBaseIdAndId(baseId, id, transaction, forUpdate) {
-    let options = {
-        where: {
+async function getBasePartRecordByBaseIdAndId(baseId, id, transaction, forUpdate) {
+	let options = {
+		attributes :{
+//			exclude:['base_id', baseId] // do not work, why?
+		},
+		where: {
 			baseId: baseId,
 			id : id
+		},
+		logging:false
+	}
+	if(transaction != null) {
+		options.transaction = transaction;
+		if(forUpdate != null) {
+			options.lock = forUpdate?transaction.LOCK.UPDATE:transaction.LOCK.SHARE;
+		}
+	}
+
+	let tgtRecordModel = await DaoBasePart.findOne(options);
+	let tgtRecordObj = null;
+	if (tgtRecordModel != null) {
+		tgtRecordObj = tgtRecordModel.toJSON();
+	}
+	return tgtRecordObj;
+}
+
+async function getBasePartRecordsByBaseId(baseId, transaction, forUpdate) {
+    let options = {
+        where: {
+			baseId: baseId
         },
         logging:false
     }
@@ -86,4 +111,5 @@ async function getBasePartRecordsByBaseIdAndId(baseId, id, transaction, forUpdat
 }
 
 exports.createNewBasePartRecord = createNewBasePartRecord;
-exports.getBasePartRecordsByBaseIdAndId = getBasePartRecordsByBaseIdAndId;
+exports.getBasePartRecordByBaseIdAndId = getBasePartRecordByBaseIdAndId;
+exports.getBasePartRecordsByBaseId = getBasePartRecordsByBaseId;

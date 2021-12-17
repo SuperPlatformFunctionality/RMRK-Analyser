@@ -39,4 +39,30 @@ async function createNewBasePartEquippableRecord(baseId, partId, collectionId, t
     return newRecordObj;
 }
 
+async function getCollectionIdsByBaseIdAndPartId(baseId, partId, transaction, forUpdate) {
+	let options = {
+		attributes:["collectionId"],
+		where: {
+			baseId: baseId,
+			partId: partId
+		},
+		logging:false
+	}
+	if(transaction != null) {
+		options.transaction = transaction;
+		if(forUpdate != null) {
+			options.lock = forUpdate?transaction.LOCK.UPDATE:transaction.LOCK.SHARE;
+		}
+	}
+
+	let tgtModels = await DaoBasePartEquippable.findAll(options);
+	let collectionIds = [];
+	for(let i = 0 ; i < tgtModels.length; i++) {
+		collectionIds.push(tgtModels[i].toJSON().collectionId);
+	}
+	return collectionIds;
+
+}
+
 exports.createNewBasePartEquippableRecord = createNewBasePartEquippableRecord;
+exports.getCollectionIdsByBaseIdAndPartId = getCollectionIdsByBaseIdAndPartId;

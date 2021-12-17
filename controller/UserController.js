@@ -9,22 +9,10 @@ class UserController extends BaseComponent {
 
 	constructor() {
 		super();
-		this.minerDetail = this.minerDetail.bind(this);
+		this.getAllNFTsOfAddress = this.getAllNFTsOfAddress.bind(this);
 	}
 
-	async minerDetail(req, res, next) {
-		let resJson = null;
-
-		try {
-			let detail = {};
-			resJson = new ResponseModel(ResponseCode.SUCCESS, detail);
-		} catch (e) {
-			resJson = new ResponseModel((e instanceof ResponseCodeError)?e.respondCode:ResponseCode.SYSTEM_ERROR);
-		}
-		res.send(resJson);
-	}
-
-	async getAllNFTs(req, res, next) {
+	async getAllNFTsOfAddress(req, res, next) {
 		let resJson = null;
 		let address = req.body["address"];
 		try {

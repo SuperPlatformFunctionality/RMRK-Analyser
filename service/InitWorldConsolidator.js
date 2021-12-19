@@ -1,10 +1,33 @@
 'use strict';
 
 import { Consolidator, OP_TYPES } from 'rmrk-tools';
+import DaoInvalidCall from "../dao/DaoInvalidCall.js"
 
 class InitWorldConsolidator extends Consolidator {
 	constructor(ss58Format, dbAdapter, emitEmoteChanges, emitInteractionChanges) {
 		super(ss58Format, dbAdapter, emitEmoteChanges, emitInteractionChanges);
+	}
+
+	//it is a private method in ts source code
+	updateInvalidCalls(op_type, remark) {
+		const invalidCallBase = {
+			op_type,
+			block: remark.block,
+			caller: remark.caller,
+		};
+		return async function update(object_id, message) {
+			/*
+			this.invalidCalls.push(Object.assign(Object.assign({}, invalidCallBase), { object_id,
+				message }));
+			*/
+			try {
+				await DaoInvalidCall.createNewInvalidCallRecord(invalidCallBase.op_type,
+					invalidCallBase.block, invalidCallBase.caller,
+					object_id, message);
+			} catch (e) {
+				console.log("DaoInvalidCall.createNewInvalidCallRecord exception:", e);
+			}
+		};
 	}
 
 	async consolidateToDB(rmrks) {

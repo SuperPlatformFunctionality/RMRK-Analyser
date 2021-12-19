@@ -104,3 +104,18 @@ CREATE TABLE `nft_priority` (
 
 
 -- children表
+
+
+-- invalid call
+CREATE TABLE `invalid_call` (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `op_type` varchar(16) NOT NULL,
+    `block` int(11) unsigned NOT NULL DEFAULT '0',
+    `caller` varchar(48) NOT NULL,
+    `object_id` varchar(512) DEFAULT NULL,
+    `message` varchar(512) DEFAULT NULL,
+    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY `pk_id`(`id`) USING BTREE,
+    INDEX `idx_caller`(`caller`) USING HASH
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+

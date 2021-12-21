@@ -73,10 +73,11 @@ class InitWorldAdapter {
 					});
 
 		*/
-		let newNftInst = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]),
+		let curNtf = await DaoNFT.getNFTRecordsById(consolidatedNFT.id);
+		let newNftInst = Object.assign(Object.assign({}, curNtf),
 			{
 				resources: nft === null || nft === void 0 ? void 0 : nft.resources,
-				priority: (nft === null || nft === void 0 ? void 0 : nft.priority) || this.nfts[consolidatedNFT.id].priority
+				priority: (nft === null || nft === void 0 ? void 0 : nft.priority) || curNtf.priority
 			});
 		try {
 			//save resource to db
@@ -129,17 +130,49 @@ class InitWorldAdapter {
 					((_b = this.nfts[child.id]) === null || _b === void 0 ? void 0 : _b.children.length) > 0) {
 					await this.updateNFTChildrenRootOwner(this.nfts[child.id], rootowner || nft.rootowner, (level || 1) + 1);
 				}
-				this.nfts[child.id] = Object.assign(Object.assign({}, this.nfts[child.id]), { forsale: BigInt(0), rootowner: rootowner || nft.rootowner });
+				this.nfts[child.id] = Object.assign(Object.assign({}, this.nfts[child.id]),
+								{
+									forsale: BigInt(0),  //设置为not for sale
+									rootowner: rootowner || nft.rootowner
+								});
 			});
 			await Promise.all(promises);
 		}
 		*/
+
+		//
+
 	}
 	async updateNFTBuy(nft, consolidatedNFT) {
 //		this.nfts[consolidatedNFT.id] = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]), { owner: nft === null || nft === void 0 ? void 0 : nft.owner, rootowner: nft === null || nft === void 0 ? void 0 : nft.rootowner, changes: nft === null || nft === void 0 ? void 0 : nft.changes, forsale: nft === null || nft === void 0 ? void 0 : nft.forsale });
 	}
 	async updateNFTSend(nft, consolidatedNFT) {
-//		this.nfts[consolidatedNFT.id] = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]), { changes: nft === null || nft === void 0 ? void 0 : nft.changes, owner: nft === null || nft === void 0 ? void 0 : nft.owner, rootowner: nft === null || nft === void 0 ? void 0 : nft.rootowner, forsale: BigInt(0), pending: nft === null || nft === void 0 ? void 0 : nft.pending });
+		/*
+		this.nfts[consolidatedNFT.id] =
+			Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]),
+				{
+					changes: nft === null || nft === void 0 ? void 0 : nft.changes,
+					owner: nft === null || nft === void 0 ? void 0 : nft.owner,
+					rootowner: nft === null || nft === void 0 ? void 0 : nft.rootowner,
+					forsale: BigInt(0),
+					pending: nft === null || nft === void 0 ? void 0 : nft.pending
+					});
+		*/
+		let curNtf = await DaoNFT.getNFTRecordsById(consolidatedNFT.id);
+		let tempNft = Object.assign(Object.assign({}, curNtf),
+			{
+				changes: nft === null || nft === void 0 ? void 0 : nft.changes,
+				owner: nft === null || nft === void 0 ? void 0 : nft.owner,
+				rootowner: nft === null || nft === void 0 ? void 0 : nft.rootowner,
+				forsale: BigInt(0),
+				pending: nft === null || nft === void 0 ? void 0 : nft.pending
+			});
+		try {
+			await DaoNFT.updateNFTById(tempNft.id, tempNft.owner, tempNft.forsale,
+								tempNft.pending, tempNft.burned);
+		} catch (e) {
+			console.log(e);
+		}
 	}
 	async updateNFTBurn(nft, consolidatedNFT) {
 //		this.nfts[consolidatedNFT.id] = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]), { burned: nft === null || nft === void 0 ? void 0 : nft.burned, changes: nft === null || nft === void 0 ? void 0 : nft.changes, equipped: "", forsale: BigInt(nft.forsale) > BigInt(0) ? BigInt(0) : nft.forsale });

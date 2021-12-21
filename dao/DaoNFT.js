@@ -110,6 +110,8 @@ async function getNFTRecordsById(id, transaction, forUpdate) {
 	let tgtRecordObj = null;
 	if (tgtRecordModel != null) {
 		tgtRecordObj = tgtRecordModel.toJSON();
+		tgtRecordObj.children = [];
+		tgtRecordObj.changes = [];
 	}
 	return tgtRecordObj;
 }
@@ -138,6 +140,27 @@ async function getNFTIdsByOwner(owner, transaction, forUpdate) {
 
 }
 
+async function updateNFTById(id, owner, forsale, pending, burned, transaction) {
+	let updateCol = {};
+	if(owner) updateCol.owner = owner;
+	if(forsale) updateCol.forsale = forsale;
+	if(pending) updateCol.pending = pending;
+	if(burned) updateCol.burned = burned;
+	let retArray = await DaoNFT.update(updateCol,{
+		where:{
+			id: id
+		},
+		transaction:transaction,
+		logging:false
+	});
+	let affectedRow = retArray[0];
+	if(affectedRow > 1) {
+		console.log("update multiple record's status, it is impossible");
+	}
+	return true;
+}
+
 exports.createNewNFTRecord = createNewNFTRecord;
 exports.getNFTRecordsById = getNFTRecordsById;
 exports.getNFTIdsByOwner = getNFTIdsByOwner;
+exports.updateNFTById = updateNFTById;

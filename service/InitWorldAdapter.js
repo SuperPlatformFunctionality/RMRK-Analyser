@@ -12,6 +12,29 @@ import DaoNFTChild from "../dao/DaoNFTChild.js";
 import ResponseCode from "../utils/ResponseCode";
 import ResponseCodeError from "../utils/ResponseCodeError";
 
+const isPolkadotAddress = (address) => {
+	return !address.includes("-");
+};
+
+const iwFindRootOwner = async function(nftId, level = 1) {
+	if (level > 10) {
+		throw new Error("implement by zs, Trying to find an owner too deep, possible stack overflow");
+	}
+	if (isPolkadotAddress(nftId)) {
+		return nftId;
+	}
+	else {
+		// just for finding root owner,so no need to load all sub infos from other table
+		const consolidatedNFT = await DaoNFT.getNFTRecordsById(nftId);
+		if (!consolidatedNFT) {
+			// skip
+			return "";
+		}
+		// Bubble up until owner of nft is polkadot address
+		return await iwFindRootOwner(consolidatedNFT.owner, level + 1);
+	}
+};
+
 // temporarily use es6 (compatible with commonjs with babel)
 // need to rewrite with ts
 class InitWorldAdapter {
@@ -48,7 +71,9 @@ class InitWorldAdapter {
 //		this.nfts[consolidatedNFT.id] = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]), { forsale: nft === null || nft === void 0 ? void 0 : nft.forsale, changes: nft === null || nft === void 0 ? void 0 : nft.changes });
 	}
 	async updateEquip(nft, consolidatedNFT) {
-//		this.nfts[consolidatedNFT.id] = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]), { children: nft.children });
+	/*
+		this.nfts[consolidatedNFT.id] = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]), { children: nft.children });
+	*/
 	}
 	async updateSetPriority(nft, consolidatedNFT) {
 //		this.nfts[consolidatedNFT.id] = Object.assign(Object.assign({}, this.nfts[consolidatedNFT.id]), { priority: nft.priority });
@@ -160,8 +185,8 @@ class InitWorldAdapter {
 					pending: nft === null || nft === void 0 ? void 0 : nft.pending
 					});
 		*/
-		let curNtf = await this._getNFTAndAllSubInfo(consolidatedNFT.id);
-		let tempNft = Object.assign(Object.assign({}, curNtf),
+		let curStatusNft = await this._getNFTAndAllSubInfo(consolidatedNFT.id);
+		let newStatusNft = Object.assign(Object.assign({}, curStatusNft),
 			{
 				changes: nft === null || nft === void 0 ? void 0 : nft.changes,
 				owner: nft === null || nft === void 0 ? void 0 : nft.owner,
@@ -169,9 +194,47 @@ class InitWorldAdapter {
 				forsale: BigInt(0),
 				pending: nft === null || nft === void 0 ? void 0 : nft.pending
 			});
+
 		try {
-			await DaoNFT.updateNFTById(tempNft.id, tempNft.owner, tempNft.forsale,
-								tempNft.pending, tempNft.burned);
+			if(!isPolkadotAddress(curStatusNft.owner)) {
+				// Remove NFT from children of previous owner
+				let oldParentId = curStatusNft.owner;
+				let oldOwner = await this._getNFTAndAllSubInfo(oldParentId);
+				let oldOwnerChildren = oldOwner.children;
+				for(let i = 0 ; i < oldOwnerChildren.length ; i++) {
+					let tempChild = oldOwnerChildren[i];
+					if(tempChild.id == consolidatedNFT.id) {
+						await DaoNFTChild.deleteChildByNftIdAndChildId(oldOwner.id, consolidatedNFT.id);
+						break;
+					}
+				}
+			}
+
+			await DaoNFT.updateNFTById(newStatusNft.id,
+									newStatusNft.owner, newStatusNft.forsale,
+									newStatusNft.pending, newStatusNft.burned);
+
+			if(!isPolkadotAddress(newStatusNft.owner)) {
+				// Add NFT as child of new owner
+				let newParentId = newStatusNft.owner;
+				let newOwner = await this._getNFTAndAllSubInfo(newParentId);
+				let newOwnerChildren = newOwner.children;
+				let childFound = false;
+				for(let i = 0 ; i<newOwnerChildren.length ; i++) {
+					let tempChild = newOwnerChildren[i];
+					if(tempChild.id == consolidatedNFT.id) {
+						childFound = true;
+						break;
+					}
+				}
+				if(!childFound) {
+					let txCaller = await iwFindRootOwner(curStatusNft.id); //the old owner must be the tx caller
+					let newRootOwner = await iwFindRootOwner(newOwner.id);
+					console.log(txCaller, newRootOwner);
+					await DaoNFTChild.createDaoNFTChild(newOwner.id, consolidatedNFT.id, (txCaller != newRootOwner), "");
+				}
+			}
+
 		} catch (e) {
 			console.log(e);
 		}
@@ -314,6 +377,7 @@ class InitWorldAdapter {
 		}
 		return tgtNft;
 	}
+
 }
 
 //call once to create the instance

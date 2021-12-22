@@ -72,5 +72,29 @@ async function getNFTChildrenByNftId(nftId, transaction, forUpdate) {
 
 }
 
+async function deleteChildByNftIdAndChildId(nftId, id, transaction, forUpdate) {
+	let options = {
+		where: {
+			nftId:nftId,
+			id:id,
+		},
+		logging:false
+	}
+	if(transaction != null) {
+		options.transaction = transaction;
+		if(forUpdate != null) {
+			options.lock = forUpdate?transaction.LOCK.UPDATE:transaction.LOCK.SHARE;
+		}
+	}
+
+	let affectedRow = await DaoNFTChild.destroy(options);
+	if(affectedRow > 1) {
+		console.log("delete multiple record's status");
+	}
+	return true;
+}
+
+
 exports.createDaoNFTChild = createDaoNFTChild;
 exports.getNFTChildrenByNftId = getNFTChildrenByNftId;
+exports.deleteChildByNftIdAndChildId = deleteChildByNftIdAndChildId;

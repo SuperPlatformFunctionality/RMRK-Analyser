@@ -37,7 +37,7 @@ CREATE TABLE `base_part_equippable` (
     `part_id` varchar(48) NOT NULL,
     `collection_id` varchar(48) NOT NULL,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY `pk_base_id_part_id`(`base_id`,`part_id`) USING HASH
+    PRIMARY KEY `pk_base_id_part_id_coll_id`(`base_id`,`part_id`,`collection_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `collection` (

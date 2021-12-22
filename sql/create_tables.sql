@@ -59,6 +59,10 @@ CREATE TABLE `nft` (
     `symbol` varchar(48) NOT NULL,
     `sn`    varchar(8) NOT NULL,
     `owner` varchar(48) NOT NULL,
+    --  resources
+    --	priority
+    --	children
+    --	logic
     `metadata` varchar(255) NOT NULL DEFAULT '',
     `transferable` int(10) NOT NULL DEFAULT '1',
     `pending` tinyint(4) NOT NULL DEFAULT '0',
@@ -80,9 +84,11 @@ CREATE TABLE `nft_resource` (
 
     `src` varchar(255) DEFAULT NULL,
     `metadata` varchar(255) DEFAULT NULL,
+    `slot` varchar(64) DEFAULT NULL,
 
+    `thumb` varchar(255) DEFAULT NULL,
     `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY `pk_nft_id_id`(`nft_id`,`id`) USING HASH
+    PRIMARY KEY `pk_nft_id_res_id`(`nft_id`,`id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- item is nft.resources[i].parts[j], and nft.resource[i] must be a base, not a media or others
@@ -90,7 +96,7 @@ CREATE TABLE `nft_resource_base_part` (
     `nft_id` varchar(48) NOT NULL,
     `resource_id` varchar(48) NOT NULL,
     `part_id` varchar(48) NOT NULL,
-    PRIMARY KEY `pk_nft_id_id`(`nft_id`,`resource_id`,`part_id`) USING HASH
+    PRIMARY KEY `pk_nft_res_id_part_id`(`nft_id`,`resource_id`,`part_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- item is nft.priority[i]
@@ -98,13 +104,18 @@ CREATE TABLE `nft_priority` (
     `nft_id` varchar(128) NOT NULL,
     `resource_id` varchar(48) NOT NULL,
     `order` int(10) NOT NULL,
-    PRIMARY KEY `pk_nft_id_res_id`(`nft_id`, `resource_id`) USING HASH,
-    INDEX `idx_resource_id`(`resource_id`) USING HASH
+    PRIMARY KEY `pk_nft_id_res_id`(`nft_id`, `resource_id`) USING HASH
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- children表
-
+-- item is nft.children[i]
+CREATE TABLE `nft_child` (
+    `nft_id` varchar(128) NOT NULL,
+    `id` varchar(128) NOT NULL,
+    `pending` tinyint(1) NOT NULL DEFAULT '0',
+    `equipped` varchar(48) NOT NULL DEFAULT '',
+    PRIMARY KEY `pk_nft_id_child_id`(`nft_id`, `id`) USING HASH
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- invalid call
 CREATE TABLE `invalid_call` (

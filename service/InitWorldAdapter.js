@@ -7,6 +7,7 @@ import DaoNFT from "../dao/DaoNFT.js"
 import DaoNFTResource from "../dao/DaoNFTResource.js"
 import DaoNFTResourceBasePart from "../dao/DaoNFTResourceBasePart.js"
 import DaoNFTPriority from "../dao/DaoNFTPriority.js"
+import DaoNFTChild from "../dao/DaoNFTChild.js";
 
 import ResponseCode from "../utils/ResponseCode";
 import ResponseCodeError from "../utils/ResponseCodeError";
@@ -73,7 +74,7 @@ class InitWorldAdapter {
 					});
 
 		*/
-		let curNtf = await DaoNFT.getNFTRecordsById(consolidatedNFT.id);
+		let curNtf = await this._getNFTAndAllSubInfo(consolidatedNFT.id);
 		let newNftInst = Object.assign(Object.assign({}, curNtf),
 			{
 				resources: nft === null || nft === void 0 ? void 0 : nft.resources,
@@ -89,7 +90,8 @@ class InitWorldAdapter {
 					if(existResItem == null) {
 						await DaoNFTResource.createNewNFTResourceRecord(consolidatedNFT.id, resItem.id,
 							resItem.base,
-							resItem.src, resItem.metadata);
+							resItem.src, resItem.metadata,
+							resItem.slot, resItem.thumb);
 						if(resItem.base != null) {
 							for(let i= 0 ; i < resItem.parts.length ; i++) {
 								let tempResBasePart = resItem.parts[i];
@@ -158,7 +160,7 @@ class InitWorldAdapter {
 					pending: nft === null || nft === void 0 ? void 0 : nft.pending
 					});
 		*/
-		let curNtf = await DaoNFT.getNFTRecordsById(consolidatedNFT.id);
+		let curNtf = await this._getNFTAndAllSubInfo(consolidatedNFT.id);
 		let tempNft = Object.assign(Object.assign({}, curNtf),
 			{
 				changes: nft === null || nft === void 0 ? void 0 : nft.changes,
@@ -304,7 +306,10 @@ class InitWorldAdapter {
 			}
 			tgtNft.priority = priority;
 
-			// children
+			// load children from db
+			let children = await DaoNFTChild.getNFTChildrenByNftId(id);
+			tgtNft.children = children || [];
+
 			// logic
 		}
 		return tgtNft;

@@ -34,13 +34,13 @@ const DaoNFT = sequelize.define('DaoNFT', {
 		field:"rootowner"
 	},
 	resources:{
-
+		//in nft_resource table, query by id of nft
 	}
 	priority:{
-
+		//in nft_priority table, query by id of nft
 	},
 	children:{
-
+		//in nft_children table, query by id of nft
 	},
 	logic :{
 
@@ -110,7 +110,6 @@ async function getNFTRecordsById(id, transaction, forUpdate) {
 	let tgtRecordObj = null;
 	if (tgtRecordModel != null) {
 		tgtRecordObj = tgtRecordModel.toJSON();
-		tgtRecordObj.children = [];
 		tgtRecordObj.changes = [];
 	}
 	return tgtRecordObj;

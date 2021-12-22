@@ -29,6 +29,14 @@ const DaoNFTResource = sequelize.define('DaoNFTResource', {
 	metadata: {
 		type:DataTypes.STRING(255),
 		field:"metadata"
+	},
+	slot: {
+		type:DataTypes.STRING(64),
+		field:"slot"
+	},
+	thumb: {
+		type:DataTypes.STRING(255),
+		field:"thumb"
 	}
 }, {
     // Other model options go here
@@ -36,13 +44,15 @@ const DaoNFTResource = sequelize.define('DaoNFTResource', {
     timestamps: false
 });
 
-async function createNewNFTResourceRecord(nftId, id, base, src, metadata, transaction) {
+async function createNewNFTResourceRecord(nftId, id, base, src, metadata, slot, thumb, transaction) {
     let newNFTResModel = await DaoNFTResource.create({
 		nftId:nftId,
 		id:id,
 		base:base,
 		src:src,
-		metadata:metadata
+		metadata:metadata,
+		slot:slot,
+		thumb: thumb
     },{
         transaction:transaction,
         logging:false

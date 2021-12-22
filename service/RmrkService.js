@@ -4,7 +4,7 @@ import MyUtils from "../utils/MyUtils.js";
 import config from '../config/index.js';
 const polkadotNodeUrl = config.polkadotNodeUrl;
 
-import { ApiPromise, WsProvider } from '@polkadot/api';
+import { ApiPromise, WsProvider, HttpProvider } from '@polkadot/api';
 
 import { fetchRemarks, getRemarksFromBlocks, getLatestFinalizedBlock, Consolidator } from 'rmrk-tools';
 import InitWorldConsolidator from "./InitWorldConsolidator.js";

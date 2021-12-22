@@ -230,7 +230,7 @@ class InitWorldAdapter {
 				if(!childFound) {
 					let txCaller = await iwFindRootOwner(curStatusNft.id); //the old owner must be the tx caller
 					let newRootOwner = await iwFindRootOwner(newOwner.id);
-					console.log(txCaller, newRootOwner);
+//					console.log(txCaller, newRootOwner);
 					await DaoNFTChild.createDaoNFTChild(newOwner.id, consolidatedNFT.id, (txCaller != newRootOwner), "");
 				}
 			}

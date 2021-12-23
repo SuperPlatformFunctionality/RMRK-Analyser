@@ -2,7 +2,8 @@
 import RabbitMqConsumer from "../rabbitmq/rabbitmq_consumer.js"
 import MyUtils from "../utils/MyUtils.js";
 import config from '../config/index.js';
-const polkadotNodeUrl = config.polkadotNodeUrl;
+const polkadotNodeWsUrl = config.polkadotNodeWsUrl;
+const polkadotNodeHttpUrl = config.polkadotNodeHttpUrl;
 
 import { ApiPromise, WsProvider, HttpProvider } from '@polkadot/api';
 
@@ -11,13 +12,15 @@ import InitWorldConsolidator from "./InitWorldConsolidator.js";
 import InitWorldAdapter from "./InitWorldAdapter";
 import DaoBase from "../dao/DaoBase.js";
 import DaoNFT from "../dao/DaoNFT.js";
-const wsProvider = new WsProvider(polkadotNodeUrl);
 let api = null;
 let consolidator = null;
 
 let initPolkadotJs = async function() {
 	console.log("start init polkadot js...");
-	api = await ApiPromise.create({ provider: wsProvider });
+	let wsProvider = new WsProvider(polkadotNodeWsUrl);
+	let httpProvider = new HttpProvider(polkadotNodeHttpUrl);
+	let useWs = false;
+	api = await ApiPromise.create({ provider: useWs?wsProvider:httpProvider });
 	const systemProperties = await api.rpc.system.properties();
 	let ss58Format = systemProperties.toHuman().ss58Format;
 	//ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama

@@ -25,7 +25,7 @@ const DaoNFT = sequelize.define('DaoNFT', {
 		field:"sn"
 	},
 	owner:{
-		type:DataTypes.STRING(48),
+		type:DataTypes.STRING(128),
 		field:"owner"
 	},
 	/*

@@ -58,7 +58,7 @@ CREATE TABLE `nft` (
     `collection` varchar(48) NOT NULL,
     `symbol` varchar(48) NOT NULL,
     `sn`    varchar(8) NOT NULL,
-    `owner` varchar(48) NOT NULL,
+    `owner` varchar(128) NOT NULL,
     --  resources
     --	priority
     --	children

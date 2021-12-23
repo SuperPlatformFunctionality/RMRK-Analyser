@@ -9,7 +9,7 @@ const DaoNFTResourceBasePart = sequelize.define('DaoNFTResourceBasePart', {
 		field:"nft_id"
 	},
 	resourceId: {
-		type:DataTypes.STRING(128),
+		type:DataTypes.STRING(48),
         primaryKey:true,
         field:"resource_id"
     },

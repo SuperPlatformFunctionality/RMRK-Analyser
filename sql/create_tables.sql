@@ -93,7 +93,7 @@ CREATE TABLE `nft_resource` (
 
 -- item is nft.resources[i].parts[j], and nft.resource[i] must be a base, not a media or others
 CREATE TABLE `nft_resource_base_part` (
-    `nft_id` varchar(48) NOT NULL,
+    `nft_id` varchar(128) NOT NULL,
     `resource_id` varchar(48) NOT NULL,
     `part_id` varchar(48) NOT NULL,
     PRIMARY KEY `pk_nft_res_id_part_id`(`nft_id`,`resource_id`,`part_id`) USING HASH

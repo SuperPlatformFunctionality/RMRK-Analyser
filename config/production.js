@@ -2,9 +2,9 @@
 
 module.exports = {
 	port: 26080,
-	polkadotNodeWsUrl:"wss://rpc.polkadot.io",
-	polkadotNodeHttpUrl:"http://rpc.polkadot.io",
-	ss58Format:0, //0-polkadot, 2-kusama, 42-substract network
+	polkadotNodeWsUrl:"wss://service.elara.patract.io/Kusama/34ad2c3b7e7dc805a98e3372748a1eb7",
+	polkadotNodeHttpUrl:"https://service.elara.patract.io/Kusama/34ad2c3b7e7dc805a98e3372748a1eb7",
+	ss58Format:2, //0-polkadot, 2-kusama, 42-substract network
 	blockChain:{
 
 	},

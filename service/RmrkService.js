@@ -17,10 +17,9 @@ let consolidator = null;
 
 let initPolkadotJs = async function() {
 	console.log("start init polkadot js...");
-	let wsProvider = new WsProvider(polkadotNodeWsUrl);
-	let httpProvider = new HttpProvider(polkadotNodeHttpUrl);
-	let useWs = false;
-	api = await ApiPromise.create({ provider: useWs?wsProvider:httpProvider });
+	let useWS = false;
+	let theProvider = (useWS ? new WsProvider(polkadotNodeWsUrl) : new HttpProvider(polkadotNodeHttpUrl));
+	api = await ApiPromise.create({ provider: theProvider });
 	const systemProperties = await api.rpc.system.properties();
 	let ss58Format = systemProperties.toHuman().ss58Format;
 	//ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama

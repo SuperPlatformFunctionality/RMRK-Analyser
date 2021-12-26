@@ -13,10 +13,9 @@ app.all('*', (req, res, next) => {
 	const allowOrigin = origin || Origin || referer || Referer || '*';
 
 	res.header("Access-Control-Allow-Origin", allowOrigin);
-	res.header("Access-Control-Expose-Headers", "OPSESSION");
 	res.header("Access-Control-Allow-Headers",
 		"Cookie, Origin, X-Requested-With, Content-Type, "
-		+ "OPSESSION, i-msg-type, Accept, X-Auth-Token, X-Auth-DEVICE,"
+		+ "i-msg-type, Accept, X-Auth-Token, X-Auth-DEVICE,"
 		+ "Authorization, x-requested-with, cache-control, X-Requested-With, "
 		+ "Access-Control-Allow-Origin, Access-Control-Allow-Credentials");
 	res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");

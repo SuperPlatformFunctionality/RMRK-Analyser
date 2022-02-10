@@ -15,9 +15,11 @@ class InitWorldConsolidator extends Consolidator {
 		};
 		return async function update(object_id, message) {
 			/*
+			//just in memory
 			this.invalidCalls.push(Object.assign(Object.assign({}, invalidCallBase), { object_id,
 				message }));
 			*/
+			//save to db
 			try {
 				await DaoInvalidCall.createNewInvalidCallRecord(invalidCallBase.op_type,
 					invalidCallBase.block, invalidCallBase.caller,

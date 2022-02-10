@@ -6,12 +6,10 @@ const polkadotNodeHttpUrl = config.polkadotNodeHttpUrl;
 const { ApiPromise, WsProvider, HttpProvider } = require('@polkadot/api');
 
 const InitWorldConsolidator = require("./InitWorldConsolidator.js");
-const InitWorldAdapter = require("./InitWorldAdapter");
+const InitWorldDBAdapter = require("./InitWorldDBAdapter");
 const DaoNFT = require("../dao/DaoNFT");
 let api = null;
 let consolidator = null;
-
-
 
 class RmrkService {
 	constructor() {
@@ -35,17 +33,17 @@ class RmrkService {
 	}
 
 	async getBaseObjInst(baseId) {
-		let baseObj = await InitWorldAdapter.getInstance().getBaseById(baseId);
+		let baseObj = await InitWorldDBAdapter.getInstance().getBaseById(baseId);
 		return baseObj;
 	}
 
 	async getCollectionObjInst(collectionId) {
-		let collectionObj = await InitWorldAdapter.getInstance().getCollectionById(collectionId);
+		let collectionObj = await InitWorldDBAdapter.getInstance().getCollectionById(collectionId);
 		return collectionObj;
 	}
 
 	async getNFTObjInst(nftId) {
-		let nftObj = await InitWorldAdapter.getInstance().getNFTById(nftId);
+		let nftObj = await InitWorldDBAdapter.getInstance().getNFTById(nftId);
 		return nftObj;
 	}
 
@@ -64,7 +62,7 @@ let initPolkadotJs = async function() {
 	//const systemProperties = await api.rpc.system.properties();
 	//let ss58Format = systemProperties.ss58Format.toHuman();
 	//ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama
-	consolidator = new InitWorldConsolidator(ss58Format, InitWorldAdapter.getInstance());
+	consolidator = new InitWorldConsolidator(ss58Format, InitWorldDBAdapter.getInstance());
 	await RabbitMqConsumer.initConsumer();
 	console.log("end init polkadot js...");
 }

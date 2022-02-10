@@ -62,7 +62,7 @@ let initPolkadotJs = async function() {
 	//const systemProperties = await api.rpc.system.properties();
 	//let ss58Format = systemProperties.ss58Format.toHuman();
 	//ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama
-	consolidator = new InitWorldConsolidator(ss58Format, InitWorldDBAdapter.getInstance());
+	consolidator = new InitWorldConsolidator(ss58Format, InitWorldAdapter.getInstance());
 	await RabbitMqConsumer.initConsumer();
 	console.log("end init polkadot js...");
 }

@@ -9,4 +9,4 @@ class ResponseCodeError extends Error {
     }
 }
 
-export default ResponseCodeError;
+module.exports = ResponseCodeError;

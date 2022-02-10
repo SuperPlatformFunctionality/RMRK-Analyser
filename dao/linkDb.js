@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-import config from '../config/index.js';
+let config = require('../config/index.js');
 let dbUrl = config.dbUrl;
 
 let sequelize = new Sequelize(dbUrl,{

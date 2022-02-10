@@ -1,7 +1,7 @@
-import routerRmrk from "./routerRmrk.js";
-import routerUser from "./routerUser.js";
+const routerRmrk = require("./routerRmrk.js");
+const routerUser = require("./routerUser.js");
 
-export default app => {
+module.exports = app => {
 	app.use("/rmrk2", routerRmrk);
 	app.use("/user", routerUser);
 }

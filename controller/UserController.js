@@ -1,9 +1,9 @@
 'use strict';
-import BaseComponent from '../prototype/BaseComponent'
-import ResponseCode from "../utils/ResponseCode";
-import ResponseModel from "../utils/ResponseModel"
-import ResponseCodeError from "../utils/ResponseCodeError";
-import DaoNFT from "../dao/DaoNFT";
+const BaseComponent = require('../prototype/BaseComponent');
+const ResponseCode = require("../utils/ResponseCode");
+const ResponseModel = require("../utils/ResponseModel");
+const ResponseCodeError = require("../utils/ResponseCodeError");
+const DaoNFT = require("../dao/DaoNFT");
 
 class UserController extends BaseComponent {
 
@@ -26,4 +26,4 @@ class UserController extends BaseComponent {
 
 }
 
-export default new UserController();
+module.exports = new UserController();

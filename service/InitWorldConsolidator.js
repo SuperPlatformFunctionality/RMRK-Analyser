@@ -1,7 +1,7 @@
 'use strict';
 
-import { Consolidator, OP_TYPES } from 'rmrk-tools';
-import DaoInvalidCall from "../dao/DaoInvalidCall.js"
+const { Consolidator, OP_TYPES } = require('rmrk-tools');
+const DaoInvalidCall = require("../dao/DaoInvalidCall.js");
 
 class InitWorldConsolidator extends Consolidator {
 	constructor(ss58Format, dbAdapter, emitEmoteChanges, emitInteractionChanges) {
@@ -152,4 +152,4 @@ class InitWorldConsolidator extends Consolidator {
 
 }
 
-export default InitWorldConsolidator;
+module.exports = InitWorldConsolidator;

@@ -1,8 +1,8 @@
 'use strict';
 
-import ResponseModel from "../utils/ResponseModel";
-import ResponseCode from "../utils/ResponseCode";
-import ResponseCodeError from "../utils/ResponseCodeError";
+const ResponseModel = require("../utils/ResponseModel");
+const ResponseCode = require("../utils/ResponseCode");
+const ResponseCodeError = require("../utils/ResponseCodeError");
 
 class UserCheckMiddleWare {
 	constructor() {
@@ -33,4 +33,4 @@ class UserCheckMiddleWare {
 	}
 }
 
-export default new UserCheckMiddleWare()
+module.exports = new UserCheckMiddleWare()

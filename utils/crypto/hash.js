@@ -1,6 +1,6 @@
 'use strict';
 
-import CryptoJS from 'crypto-js';
+let CryptoJS = require('crypto-js');
 
 //code from nkn-sdk-js
 

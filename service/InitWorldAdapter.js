@@ -1,16 +1,16 @@
 'use strict';
-import DaoBase from "../dao/DaoBase.js";
-import DaoBasePart from "../dao/DaoBasePart.js"
-import DaoBasePartEquippable from "../dao/DaoBasePartEquippable.js"
-import DaoCollection from "../dao/DaoCollection.js"
-import DaoNFT from "../dao/DaoNFT.js"
-import DaoNFTResource from "../dao/DaoNFTResource.js"
-import DaoNFTResourceBasePart from "../dao/DaoNFTResourceBasePart.js"
-import DaoNFTPriority from "../dao/DaoNFTPriority.js"
-import DaoNFTChild from "../dao/DaoNFTChild.js";
+const DaoBase = require("../dao/DaoBase.js");
+const DaoBasePart = require("../dao/DaoBasePart.js");
+const DaoBasePartEquippable = require("../dao/DaoBasePartEquippable.js");
+const DaoCollection = require("../dao/DaoCollection.js");
+const DaoNFT = require("../dao/DaoNFT.js");
+const DaoNFTResource = require("../dao/DaoNFTResource.js");
+const DaoNFTResourceBasePart = require("../dao/DaoNFTResourceBasePart.js");
+const DaoNFTPriority = require("../dao/DaoNFTPriority.js");
+const DaoNFTChild = require("../dao/DaoNFTChild.js");
 
-import ResponseCode from "../utils/ResponseCode";
-import ResponseCodeError from "../utils/ResponseCodeError";
+const ResponseCode = require("../utils/ResponseCode");
+const ResponseCodeError = require("../utils/ResponseCodeError");
 
 const isPolkadotAddress = (address) => {
 	return !address.includes("-");
@@ -382,4 +382,4 @@ class InitWorldAdapter {
 
 //call once to create the instance
 InitWorldAdapter.getInstance();
-export default InitWorldAdapter;
+module.exports = InitWorldAdapter;

@@ -1,13 +1,12 @@
-import express from 'express';
-import config from './config/index.js';
-import router from './routes/index.js';
-import cookieParser from 'cookie-parser'
-import history from 'connect-history-api-fallback';
-import chalk from 'chalk';
+const express = require('express');
+const config = require('./config/index.js');
+const router = require('./routes/index.js');
+const cookieParser = require('cookie-parser');
+const history = require('connect-history-api-fallback');
+const chalk = require('chalk');
 
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 const app = express();
-
 app.all('*', (req, res, next) => {
 	const { origin, Origin, referer, Referer } = req.headers;
 	const allowOrigin = origin || Origin || referer || Referer || '*';

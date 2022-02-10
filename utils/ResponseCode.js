@@ -52,5 +52,5 @@ ResponseCode.KYC_IDENTITY_CARD_NUMBER_CHECK_INVALID 	= {code:"400002", msg:"iden
 ResponseCode.KYC_IDENTITY_CARD_NUMBER_CHECK_ABNORMAL 	= {code:"400003", msg:"identity card number checking abnormal"}; // 实名制身份证号码验证证件号异常,检验未通过
 ResponseCode.KYC_IDENTITY_CARD_NUMBER_CHECK_NO_RESULT 	= {code:"400004", msg:"identity card number checking no result"};  	// 实名制身份证号码验证查询无结果
 
-export default ResponseCode;
+module.exports = ResponseCode;
 

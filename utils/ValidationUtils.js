@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-import validator from "validator"
+let validator = require("validator");
 
 class ValidationUtils {
     constructor() {
@@ -27,4 +27,4 @@ class ValidationUtils {
 
 }
 
-export default ValidationUtils
+module.exports = ValidationUtils

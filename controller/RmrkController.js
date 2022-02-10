@@ -1,10 +1,10 @@
 'use strict';
-import BaseComponent from '../prototype/BaseComponent.js'
-import ResponseCode from "../utils/ResponseCode.js";
-import ResponseModel from "../utils/ResponseModel.js"
-import rmrkService from "../service/RmrkService.js";
+const BaseComponent = require('../prototype/BaseComponent.js');
+const ResponseCode = require("../utils/ResponseCode.js");
+const ResponseModel = require("../utils/ResponseModel.js");
+const rmrkService = require("../service/RmrkService.js");
 
-import ResponseCodeError from "../utils/ResponseCodeError";
+const ResponseCodeError = require("../utils/ResponseCodeError");
 
 class RmrkController extends BaseComponent {
 
@@ -54,4 +54,4 @@ class RmrkController extends BaseComponent {
 
 }
 
-export default new RmrkController();
+module.exports = new RmrkController();

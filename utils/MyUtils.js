@@ -1,10 +1,7 @@
 ﻿"use strict";
-//const crypto = require('crypto');
-//const fs = require("fs");
-//const path = require("path");
 
-import fs from "fs";
-import path from "path";
+let fs = require("fs");
+let path = require("path");
 
 let appendStrToFile = function(theStr, fileName) {
     fs.appendFile(path.join(__dirname, fileName), "\r\n" + theStr, function(err) {
@@ -41,5 +38,5 @@ let MyUtils = {
 	getRandomNumbericString
 }
 
-export default MyUtils;
+module.exports = MyUtils;
 

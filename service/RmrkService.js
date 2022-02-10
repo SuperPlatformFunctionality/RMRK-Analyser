@@ -1,17 +1,13 @@
 'use strict';
-import RabbitMqConsumer from "../rabbitmq/rabbitmq_consumer.js"
-import MyUtils from "../utils/MyUtils.js";
-import config from '../config/index.js';
+const RabbitMqConsumer = require("../rabbitmq/rabbitmq_consumer.js");
+const config = require('../config/index.js');
 const polkadotNodeWsUrl = config.polkadotNodeWsUrl;
 const polkadotNodeHttpUrl = config.polkadotNodeHttpUrl;
 
-import { ApiPromise, WsProvider, HttpProvider } from '@polkadot/api';
+const { ApiPromise, WsProvider, HttpProvider } = require('@polkadot/api');
 
-import { fetchRemarks, getRemarksFromBlocks, getLatestFinalizedBlock, Consolidator } from 'rmrk-tools';
-import InitWorldConsolidator from "./InitWorldConsolidator.js";
-import InitWorldAdapter from "./InitWorldAdapter";
-import DaoBase from "../dao/DaoBase.js";
-import DaoNFT from "../dao/DaoNFT.js";
+const InitWorldConsolidator = require("./InitWorldConsolidator.js");
+const InitWorldAdapter = require("./InitWorldAdapter");
 let api = null;
 let consolidator = null;
 
@@ -70,4 +66,4 @@ class RmrkService {
 
 let rsInstance = new RmrkService();
 RabbitMqConsumer.addListener(rsInstance.onReceiveRmrkMsg);
-export default rsInstance;
+module.exports = rsInstance;

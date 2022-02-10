@@ -63,4 +63,4 @@ public static String USER_ACCOUNT_ID(Object userId) {
 }
 */
 
-export default RedisConstant
+module.exports = RedisConstant

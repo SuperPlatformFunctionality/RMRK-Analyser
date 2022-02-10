@@ -42,6 +42,16 @@ class InitWorldConsolidator extends Consolidator {
 						continue;
 					}
 					break;
+				case OP_TYPES.DESTROY:
+					if (await this.destroy(remark)) {
+						continue;
+					}
+					break;
+				case OP_TYPES.LOCK:
+					if (await this.lock(remark)) {
+						continue;
+					}
+					break;
 				case OP_TYPES.MINT:
 					if (await this.mint(remark)) {
 						continue;
@@ -131,9 +141,7 @@ class InitWorldConsolidator extends Consolidator {
 		// console.log(`${this.invalidCalls.length} invalid calls.`);
 		/*
 		const result = {
-			nfts: this.dbAdapter.getAllNFTs
-				? await this.dbAdapter.getAllNFTs()
-				: {},
+			nfts: this.dbAdapter.getAllNFTs ? await this.dbAdapter.getAllNFTs() : {},
 			collections: this.dbAdapter.getAllCollections
 				? await this.dbAdapter.getAllCollections()
 				: {},
@@ -145,7 +153,6 @@ class InitWorldConsolidator extends Consolidator {
 		if (this.emitInteractionChanges) {
 			result.changes = this.interactionChanges;
 		}
-		return result;
 		*/
 		return true;
 	}

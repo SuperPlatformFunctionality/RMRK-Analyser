@@ -72,6 +72,13 @@ class InMemoryAdapter {
 	async updateCollectionMint(collection) {
 		return (this.collections[collection.id] = collection);
 	}
+	async updateCollectionDestroy(collection) {
+		return delete this.collections[collection.id];
+	}
+	async updateCollectionLock(collection) {
+		const nfts = await this.getNFTsByCollection(collection.id);
+		return (this.collections[collection.id] = Object.assign(Object.assign({}, collection), { max: (nfts || []).filter((nft) => nft.burned === "").length }));
+	}
 	async updateBase(base) {
 		return (this.bases[base.getId()] = Object.assign(Object.assign({}, base), { id: base.getId() }));
 	}
@@ -83,6 +90,9 @@ class InMemoryAdapter {
 	}
 	async updateBaseIssuer(base, consolidatedBase) {
 		this.bases[consolidatedBase.id] = Object.assign(Object.assign({}, this.bases[consolidatedBase.id]), { issuer: base === null || base === void 0 ? void 0 : base.issuer, changes: base === null || base === void 0 ? void 0 : base.changes });
+	}
+	async getNFTsByCollection(collectionId) {
+		return Object.values(this.nfts).filter((nft) => (nft === null || nft === void 0 ? void 0 : nft.collection) === collectionId);
 	}
 	async getNFTById(id) {
 		return this.nfts[id];
@@ -100,6 +110,7 @@ class InMemoryAdapter {
 		return this.bases[id];
 	}
 }
+
 // need to rewrite with ts
 class InitWorldMemoryAdapter extends InMemoryAdapter {
 	static getInstance() {

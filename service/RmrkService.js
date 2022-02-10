@@ -6,7 +6,7 @@ const polkadotNodeHttpUrl = config.polkadotNodeHttpUrl;
 const { ApiPromise, WsProvider, HttpProvider } = require('@polkadot/api');
 
 const InitWorldConsolidator = require("./InitWorldConsolidator.js");
-const InitWorldDBAdapter = require("./InitWorldDBAdapter");
+const InitWorldAdapter = require("./InitWorldMemoryAdapter");
 const DaoNFT = require("../dao/DaoNFT");
 let api = null;
 let consolidator = null;
@@ -33,17 +33,17 @@ class RmrkService {
 	}
 
 	async getBaseObjInst(baseId) {
-		let baseObj = await InitWorldDBAdapter.getInstance().getBaseById(baseId);
+		let baseObj = await InitWorldAdapter.getInstance().getBaseById(baseId);
 		return baseObj;
 	}
 
 	async getCollectionObjInst(collectionId) {
-		let collectionObj = await InitWorldDBAdapter.getInstance().getCollectionById(collectionId);
+		let collectionObj = await InitWorldAdapter.getInstance().getCollectionById(collectionId);
 		return collectionObj;
 	}
 
 	async getNFTObjInst(nftId) {
-		let nftObj = await InitWorldDBAdapter.getInstance().getNFTById(nftId);
+		let nftObj = await InitWorldAdapter.getInstance().getNFTById(nftId);
 		return nftObj;
 	}
 

@@ -35,7 +35,6 @@ const iwFindRootOwner = async function(nftId, level = 1) {
 	}
 };
 
-// temporarily use es6 (compatible with commonjs with babel)
 // need to rewrite with ts
 class InitWorldAdapter {
 	static getInstance() {

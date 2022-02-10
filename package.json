@@ -19,12 +19,6 @@
     "@polkadot/api": "^6.9.2",
     "amqplib": "^0.6.0",
     "axios": "^0.21.0",
-    "babel": "^6.23.0",
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.24.0",
-    "babel-preset-es2015": "^6.24.0",
-    "babel-preset-stage-3": "^6.22.0",
-    "babel-register": "^6.24.0",
     "chalk": "^2.3.0",
     "config-lite": "^3.0.0",
     "connect-flash": "^0.1.1",
@@ -45,10 +39,6 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-plugin-transform-es2015-classes": "^6.24.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
-    "babel-plugin-transform-export-extensions": "^6.22.0",
     "nodemon": "^1.18.6"
   }
 }

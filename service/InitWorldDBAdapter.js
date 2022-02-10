@@ -37,10 +37,10 @@ const iwFindRootOwner = async function(nftId, level = 1) {
 // need to rewrite with ts
 class InitWorldDBAdapter {
 	static getInstance() {
-		if (!InitWorldDBAdapter.iwaInstance) {
-			InitWorldDBAdapter.iwaInstance = new InitWorldDBAdapter();
+		if (!InitWorldDBAdapter.iwdbaInstance) {
+			InitWorldDBAdapter.iwdbaInstance = new InitWorldDBAdapter();
 		}
-		return InitWorldDBAdapter.iwaInstance;
+		return InitWorldDBAdapter.iwdbaInstance;
 	}
 
 	constructor() {

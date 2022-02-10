@@ -1,4 +1,4 @@
-'use strict';
+
 
 const ResponseModel = require("../utils/ResponseModel");
 const ResponseCode = require("../utils/ResponseCode");

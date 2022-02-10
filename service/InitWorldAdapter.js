@@ -1,4 +1,3 @@
-'use strict';
 const DaoBase = require("../dao/DaoBase.js");
 const DaoBasePart = require("../dao/DaoBasePart.js");
 const DaoBasePartEquippable = require("../dao/DaoBasePartEquippable.js");

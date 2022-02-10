@@ -37,9 +37,5 @@ async function initConsumer() {
 	}
 }
 
-initConsumer();
-
-let RabbitMqConsumer = {
-	addListener
-}
 exports.addListener = addListener;
+exports.initConsumer = initConsumer;

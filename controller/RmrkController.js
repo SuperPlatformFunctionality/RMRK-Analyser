@@ -1,4 +1,3 @@
-'use strict';
 const BaseComponent = require('../prototype/BaseComponent.js');
 const ResponseCode = require("../utils/ResponseCode.js");
 const ResponseModel = require("../utils/ResponseModel.js");

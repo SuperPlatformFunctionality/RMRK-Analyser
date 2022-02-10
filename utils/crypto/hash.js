@@ -1,4 +1,4 @@
-'use strict';
+
 
 let CryptoJS = require('crypto-js');
 

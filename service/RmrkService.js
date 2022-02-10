@@ -1,4 +1,3 @@
-'use strict';
 const RabbitMqConsumer = require("../rabbitmq/rabbitmq_consumer.js");
 const config = require('../config/index.js');
 const polkadotNodeWsUrl = config.polkadotNodeWsUrl;
@@ -11,19 +10,7 @@ const InitWorldAdapter = require("./InitWorldAdapter");
 let api = null;
 let consolidator = null;
 
-let initPolkadotJs = async function() {
-	console.log("start init polkadot js...");
-	let useWS = false;
-	let theProvider = (useWS ? new WsProvider(polkadotNodeWsUrl) : new HttpProvider(polkadotNodeHttpUrl));
-	api = await ApiPromise.create({ provider: theProvider });
-	const systemProperties = await api.rpc.system.properties();
-	let ss58Format = systemProperties.toHuman().ss58Format;
-	//ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama
-	ss58Format = config.ss58Format;
-	consolidator = new InitWorldConsolidator(ss58Format, InitWorldAdapter.getInstance());
-	console.log("end init polkadot js...");
-}
-//initPolkadotJs();
+
 
 class RmrkService {
 	constructor() {
@@ -33,9 +20,6 @@ class RmrkService {
 	}
 
 	async onReceiveRmrkMsg(msgObj) {
-		if(consolidator == null) {
-			await initPolkadotJs();
-		}
 //		console.log("received msg:", msgObj);
 
 		let oneRmrk = msgObj;
@@ -64,6 +48,29 @@ class RmrkService {
 	}
 }
 
+let initPolkadotJs = async function() {
+	console.log("start init polkadot js...");
+	let useWS = false;
+	let theProvider = (useWS ? new WsProvider(polkadotNodeWsUrl) : new HttpProvider(polkadotNodeHttpUrl));
+	api = await ApiPromise.create({ provider: theProvider });
+	let ss58Format = config.ss58Format;
+	//const systemProperties = await api.rpc.system.properties();
+	//let ss58Format = systemProperties.ss58Format.toHuman();
+	//ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama
+	consolidator = new InitWorldConsolidator(ss58Format, InitWorldAdapter.getInstance());
+	await RabbitMqConsumer.initConsumer();
+	console.log("end init polkadot js...");
+}
+
 let rsInstance = new RmrkService();
-RabbitMqConsumer.addListener(rsInstance.onReceiveRmrkMsg);
+let initRabbitMq = async function() {
+	RabbitMqConsumer.addListener(rsInstance.onReceiveRmrkMsg);
+	await RabbitMqConsumer.initConsumer();
+}
+let doInit = async function() {
+	await initPolkadotJs();
+	await initRabbitMq();
+}
+doInit();
+
 module.exports = rsInstance;

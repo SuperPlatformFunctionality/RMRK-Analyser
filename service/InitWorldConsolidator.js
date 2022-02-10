@@ -1,5 +1,3 @@
-
-
 const { Consolidator, OP_TYPES } = require('rmrk-tools');
 const DaoInvalidCall = require("../dao/DaoInvalidCall.js");
 

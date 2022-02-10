@@ -1,9 +1,8 @@
-
 const BaseComponent = require('../prototype/BaseComponent');
 const ResponseCode = require("../utils/ResponseCode");
 const ResponseModel = require("../utils/ResponseModel");
 const ResponseCodeError = require("../utils/ResponseCodeError");
-const DaoNFT = require("../dao/DaoNFT");
+const rmrkService = require("../service/RmrkService.js");
 
 class UserController extends BaseComponent {
 
@@ -16,7 +15,7 @@ class UserController extends BaseComponent {
 		let resJson = null;
 		let address = req.body["address"];
 		try {
-			let nftIds = await DaoNFT.getNFTIdsByOwner(address);
+			let nftIds = await rmrkService.getNFTIdsByOwnerAddress(address);
 			resJson = new ResponseModel(ResponseCode.SUCCESS, nftIds);
 		} catch (e) {
 			resJson = new ResponseModel((e instanceof ResponseCodeError)?e.respondCode:ResponseCode.SYSTEM_ERROR);

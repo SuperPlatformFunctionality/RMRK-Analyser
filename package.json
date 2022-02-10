@@ -27,7 +27,7 @@
     "cross-env": "^5.0.0",
     "crypto-js": "^4.0.0",
     "decimal.js": "^10.2.1",
-    "express": "^4.15.2",
+    "express": "^4.17.2",
     "form-urlencoded": "^4.4.2",
     "formidable": "^1.1.1",
     "mysql2": "^2.3.3",

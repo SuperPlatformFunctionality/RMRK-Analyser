@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const history = require('connect-history-api-fallback');
 const chalk = require('chalk');
 
+BigInt.prototype.toJSON = function () {return this.toString()};
+
 console.log("process.env.NODE_ENV", process.env.NODE_ENV);
 const app = express();
 app.all('*', (req, res, next) => {

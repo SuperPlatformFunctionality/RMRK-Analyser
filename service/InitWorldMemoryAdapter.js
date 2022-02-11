@@ -1,11 +1,10 @@
-//InMemoryAdapter is copy of InMemoryAdapter in rmrk-tools
-//base InMemoryAdapter can not be exported from rmrk-tools
-
 const lodash = require("lodash");
 const moment = require("moment");
 const fs = require("fs");
 const fsPromises = require('fs/promises');
 
+//InMemoryAdapter is copy of InMemoryAdapter in rmrk-tools
+//because InMemoryAdapter can not be exported from rmrk-tools
 class InMemoryAdapter {
 	constructor() {
 		this.nfts = {};

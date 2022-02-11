@@ -62,25 +62,32 @@ class RmrkService {
 		//ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama
 		that.curBlockNo = await InitWorldAdapter.getInstance().load(that.persistenceFilePath);
 		consolidator = new InitWorldConsolidator(ss58Format, InitWorldAdapter.getInstance());
-		await RabbitMqConsumer.initConsumer();
 		console.log("end init polkadot js...");
 
 		//init rabbitmq
 		RabbitMqConsumer.addListener(rsInstance.onReceiveRmrkMsg);
 		await RabbitMqConsumer.initConsumer();
 
-		//
-		await that.startIntervalRMRKStatusPersistent();
+		//do not
+		that.startIntervalRMRKStatusPersistent().then(function () {
+			console.log(`startIntervalRMRKStatusPersistent loop stopped...`);
+		});
 	}
 
 	async startIntervalRMRKStatusPersistent() {
+
 		let that = this;
 		that.loopSaving = true;
 		let lastTs = moment().valueOf();
 		while(that.loopSaving) {
-			let curTs = moment().valueOf();
-			if(curTs - lastTs > rmrkBackupInterval * 60 * 1000) {
-				await InitWorldAdapter.getInstance().save(that.curBlockNo, that.persistenceFilePath);
+			try {
+				let curTs = moment().valueOf();
+				if(curTs - lastTs > rmrkBackupInterval * 60 * 1000) {
+					await InitWorldAdapter.getInstance().save(that.curBlockNo, that.persistenceFilePath);
+					lastTs = curTs
+				}
+			} catch (e) {
+				console.log(`some error occur in save nft rmrk status...`, e);
 			}
 			await MyUtils.sleepForMillisecond(30 * 1000);
 		}

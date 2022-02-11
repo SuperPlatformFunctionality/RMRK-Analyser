@@ -2,6 +2,7 @@ const RabbitMqConsumer = require("../rabbitmq/rabbitmq_consumer.js");
 const config = require('../config/index.js');
 const polkadotNodeWsUrl = config.polkadotNodeWsUrl;
 const polkadotNodeHttpUrl = config.polkadotNodeHttpUrl;
+const rmrkBackupInterval = config.rmrkBackupInterval;
 const MyUtils = require("../utils/MyUtils");
 const moment = require("moment");
 const path = require("path");
@@ -78,10 +79,10 @@ class RmrkService {
 		let lastTs = moment().valueOf();
 		while(that.loopSaving) {
 			let curTs = moment().valueOf();
-			if(curTs - lastTs > 30*60*1000) {
+			if(curTs - lastTs > rmrkBackupInterval * 60 * 1000) {
 				await InitWorldAdapter.getInstance().save(that.curBlockNo, that.persistenceFilePath);
 			}
-			await MyUtils.sleepForMillisecond(30*1000);
+			await MyUtils.sleepForMillisecond(30 * 1000);
 		}
 	}
 

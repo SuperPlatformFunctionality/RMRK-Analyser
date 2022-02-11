@@ -32,13 +32,18 @@ class RmrkService {
 
 	async onReceiveRmrkMsg(msgObj) {
 //		console.log("received msg:", msgObj);
-
 		let oneRmrk = msgObj;
+		if(oneRmrk.block < this.curBlockNo) {
+			console.log(`current block number is ${this.curBlockNo}, the received rmrk comes from block ${oneRmrk.block}, it should be processed already`);
+			return false;
+		}
+
 		let remarks = [];
 		remarks.push(oneRmrk);
 
 		//do consolidation ...to change the current status, do delta change......
 		await consolidator.consolidateToDB(remarks);
+
 		this.curBlockNo = msgObj.block; //todo, 如果只处理了这个blockNo中的一半rmrk协议怎么办?, 需要更好的处理方案
 		return true;
 	}

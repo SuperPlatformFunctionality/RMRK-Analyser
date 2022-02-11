@@ -2,21 +2,32 @@ const RabbitMqConsumer = require("../rabbitmq/rabbitmq_consumer.js");
 const config = require('../config/index.js');
 const polkadotNodeWsUrl = config.polkadotNodeWsUrl;
 const polkadotNodeHttpUrl = config.polkadotNodeHttpUrl;
+const MyUtils = require("../utils/MyUtils");
+const moment = require("moment");
+const path = require("path");
 
 const { ApiPromise, WsProvider, HttpProvider } = require('@polkadot/api');
 
 const InitWorldConsolidator = require("./InitWorldConsolidator.js");
 const InitWorldAdapter = require("./InitWorldMemoryAdapter");
 const DaoNFT = require("../dao/DaoNFT");
+
 let api = null;
 let consolidator = null;
 
 class RmrkService {
 	constructor() {
 		this.onReceiveRmrkMsg = this.onReceiveRmrkMsg.bind(this);
+		this.initService = this.initService.bind(this);
+
+		this.startIntervalRMRKStatusPersistent = this.startIntervalRMRKStatusPersistent.bind(this);
 		this.getBaseObjInst = this.getBaseObjInst.bind(this);
 		this.getNFTObjInst = this.getNFTObjInst.bind(this);
 		this.getNFTIdsByOwnerAddress = this.getNFTIdsByOwnerAddress.bind(this);
+
+		this.loopSaving = false;
+		this.persistenceFilePath = path.join(require.main.path, "nft-status.json"); //todo: 需要更好的持久化管理方案
+		this.curBlockNo = 0;
 	}
 
 	async onReceiveRmrkMsg(msgObj) {
@@ -28,8 +39,45 @@ class RmrkService {
 
 		//do consolidation ...to change the current status, do delta change......
 		await consolidator.consolidateToDB(remarks);
-
+		this.curBlockNo = msgObj.block; //todo, 如果只处理了这个blockNo中的一半rmrk协议怎么办?, 需要更好的处理方案
 		return true;
+	}
+
+	async initService() {
+		let that = this;
+
+		console.log("start init polkadot js...");
+		let useWS = false;
+		let theProvider = (useWS ? new WsProvider(polkadotNodeWsUrl) : new HttpProvider(polkadotNodeHttpUrl));
+		api = await ApiPromise.create({ provider: theProvider });
+		let ss58Format = config.ss58Format;
+		//const systemProperties = await api.rpc.system.properties();
+		//let ss58Format = systemProperties.ss58Format.toHuman();
+		//ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama
+		that.curBlockNo = await InitWorldAdapter.getInstance().load(that.persistenceFilePath);
+		consolidator = new InitWorldConsolidator(ss58Format, InitWorldAdapter.getInstance());
+		await RabbitMqConsumer.initConsumer();
+		console.log("end init polkadot js...");
+
+		//init rabbitmq
+		RabbitMqConsumer.addListener(rsInstance.onReceiveRmrkMsg);
+		await RabbitMqConsumer.initConsumer();
+
+		//
+		await that.startIntervalRMRKStatusPersistent();
+	}
+
+	async startIntervalRMRKStatusPersistent() {
+		let that = this;
+		that.loopSaving = true;
+		let lastTs = moment().valueOf();
+		while(that.loopSaving) {
+			let curTs = moment().valueOf();
+			if(curTs - lastTs > 30*60*1000) {
+				await InitWorldAdapter.getInstance().save(that.curBlockNo, that.persistenceFilePath);
+			}
+			await MyUtils.sleepForMillisecond(30*1000);
+		}
 	}
 
 	async getBaseObjInst(baseId) {
@@ -53,29 +101,7 @@ class RmrkService {
 	}
 }
 
-let initPolkadotJs = async function() {
-	console.log("start init polkadot js...");
-	let useWS = false;
-	let theProvider = (useWS ? new WsProvider(polkadotNodeWsUrl) : new HttpProvider(polkadotNodeHttpUrl));
-	api = await ApiPromise.create({ provider: theProvider });
-	let ss58Format = config.ss58Format;
-	//const systemProperties = await api.rpc.system.properties();
-	//let ss58Format = systemProperties.ss58Format.toHuman();
-	//ss58Format = ss58Format || 0; //0 is polkadot, 2 is kusama
-	consolidator = new InitWorldConsolidator(ss58Format, InitWorldAdapter.getInstance());
-	await RabbitMqConsumer.initConsumer();
-	console.log("end init polkadot js...");
-}
 
 let rsInstance = new RmrkService();
-let initRabbitMq = async function() {
-	RabbitMqConsumer.addListener(rsInstance.onReceiveRmrkMsg);
-	await RabbitMqConsumer.initConsumer();
-}
-let doInit = async function() {
-	await initPolkadotJs();
-	await initRabbitMq();
-}
-doInit();
-
+rsInstance.initService();
 module.exports = rsInstance;

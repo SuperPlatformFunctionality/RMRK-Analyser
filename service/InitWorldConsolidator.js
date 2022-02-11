@@ -20,6 +20,7 @@ class InitWorldConsolidator extends Consolidator {
 				message }));
 			*/
 			//save to db
+			console.log(invalidCallBase.op_type, invalidCallBase.block, invalidCallBase.caller, object_id, message);
 			try {
 				await DaoInvalidCall.createNewInvalidCallRecord(invalidCallBase.op_type,
 					invalidCallBase.block, invalidCallBase.caller,

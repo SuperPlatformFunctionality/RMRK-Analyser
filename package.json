@@ -16,7 +16,7 @@
     "deploy": "pm2 deploy production"
   },
   "dependencies": {
-    "@polkadot/api": "^6.9.2",
+    "@polkadot/api": "^7.7.1",
     "amqplib": "^0.6.0",
     "axios": "^0.21.0",
     "chalk": "^2.3.0",
@@ -30,6 +30,8 @@
     "express": "^4.17.2",
     "form-urlencoded": "^4.4.2",
     "formidable": "^1.1.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "mysql2": "^2.3.3",
     "rascal": "^13.0.0",
     "rmrk-tools": "^2.0.41",

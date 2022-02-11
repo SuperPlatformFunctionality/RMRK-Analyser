@@ -1,5 +1,10 @@
 //InMemoryAdapter is copy of InMemoryAdapter in rmrk-tools
 //base InMemoryAdapter can not be exported from rmrk-tools
+
+const lodash = require("lodash");
+const fs = require("fs");
+const fsPromises = require('fs/promises');
+
 class InMemoryAdapter {
 	constructor() {
 		this.nfts = {};
@@ -124,10 +129,49 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		super();
 	}
 
-	async loadRMRK2StatusFromJsonFile() {
-		this.nfts = {};
-		this.collections = {};
-		this.bases = {};
+	async load(filePath) {
+		let lastBlockInFile = 0;
+		//load big json file
+
+		// Check the JSON file exists and is reachable
+		let fileAccessible = false;
+		try {
+			await fsPromises.access(filePath, fs.constants.R_OK);
+			fileAccessible = true;
+		} catch (e) {
+			console.error(`${filePath} is not readable`);
+		}
+
+		if(!fileAccessible) {
+			return 0;
+		}
+
+		//todo: need to load big json file
+		let pevStatus = require(filePath);
+		this.nfts = pevStatus.nfts ? pevStatus.nfts : {};
+		this.collections = pevStatus.collections ? pevStatus.collections : {};
+		this.bases = pevStatus.bases ? pevStatus.bases : {};
+		lastBlockInFile = pevStatus.lastBlock ? pevStatus.lastBlock : 0;
+
+		return lastBlockInFile;
+	}
+
+	async save(lastBlock, filePath) {
+		console.log(`start to save RMRK2 status ${filePath}`);
+		const curStatus = {
+			nfts: await this.getAllNFTs(),
+			collections: await this.getAllCollections(),
+			bases: await this.getAllBases(),
+			lastBlock:lastBlock
+		};
+
+		//deep clone curStatus
+		let curStatusImage = lodash.cloneDeep(curStatus);
+
+		//todo : need to support big json file, write to file
+		await fsPromises.writeFile(filePath, JSON.stringify(curStatusImage));
+
+		console.log(`finish to save RMRK2 status ${filePath}`);
 	}
 
 }

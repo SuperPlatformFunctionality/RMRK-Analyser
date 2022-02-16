@@ -3,7 +3,7 @@ const moment = require("moment");
 const fs = require("fs");
 const fsPromises = require('fs/promises');
 const MyUtils = require("../utils/MyUtils");
-const { loadPromiseNfts, loadPromiseCollections, loadPromiseBases, loadPromiseLastBlock } = require("../utils/JsonBackupTools");
+const { loadPromiseNfts, loadPromiseCollections, loadPromiseBases, loadPromiseLastBlock, writeObjToFilePromise } = require("../utils/JsonBackupTools");
 
 //InMemoryAdapter is copy of InMemoryAdapter in rmrk-tools
 //because InMemoryAdapter can not be exported from rmrk-tools
@@ -187,12 +187,10 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		MyUtils.displayCurMemoryUsage("after deep clone : ");
 
 		//todo : need to support big json file, write to file
-		let fileContent = JSON.stringify(curStatusImage);
-		await fsPromises.writeFile(filePath, fileContent);
+		await writeObjToFilePromise(filePath, curStatusImage);
 		MyUtils.displayCurMemoryUsage("after writing to file : ");
 
 		curStatusImage = null;
-		fileContent = null;
 		MyUtils.displayCurMemoryUsage("after cloned object gc : ");
 		let loadingDuration = moment().unix() - startTs;
 		console.log(`finish to save RMRK2 status ${filePath}, use ${loadingDuration} seconds`);

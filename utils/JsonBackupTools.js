@@ -1,5 +1,6 @@
 ﻿let fs = require("fs");
 const JSONStream = require("JSONStream");
+const moment = require("moment");
 
 const loadPropertyPromise = function(appendFilePath, pattern) {
 	return new Promise((resolve, reject) => {
@@ -31,7 +32,7 @@ const loadPropertyPromise = function(appendFilePath, pattern) {
 }
 
 const loadObjPromise = function(appendFilePath, pattern) {
-	return new Promise((resolve, reject) => {
+	return new Promise(function(resolve, reject) {
 		try {
 			let backUpObj = {}
 			const readStream = fs.createReadStream(appendFilePath);
@@ -78,11 +79,47 @@ const loadPromiseLastBlock = async function(appendFilePath) {
 	return await loadPropertyPromise(appendFilePath, "lastBlock");
 }
 
+
+const writeObjToFilePromise = async function(outputFilePath, jsonObj) {
+
+	return new Promise(function(resolve, reject) {
+		let fileContent = JSON.stringify(jsonObj);
+//	const writeStream = fs.createWriteStream(outputFilePath);
+//	const transformStream = JSONStream.stringify();
+//	transformStream.pipe(writeStream);
+//	extracted.forEach(transformStream.write);
+//	transformStream.end();
+
+		const ws = fs.createWriteStream(outputFilePath);
+		ws.on("finish", async (e) => {
+			resolve(true);
+		});
+
+		ws.on("end", async (e) => {
+			resolve(true);
+		});
+
+		ws.on("error", async function(error) {
+			console.error("writeObjToFilePromise", error);
+			reject(error);
+		});
+//		let startTs = moment().unix();
+		ws.write(fileContent, function(e) {
+			console.log(e,"write stream flushed...\n");
+		});
+//		let loadingDuration = moment().unix() - startTs;
+//		console.log("inner calling..., ", loadingDuration , "seconds\n");
+		ws.end();
+	})
+
+}
+
 let JsonBackupTools = {
 	loadPromiseNfts,
 	loadPromiseCollections,
 	loadPromiseBases,
-	loadPromiseLastBlock
+	loadPromiseLastBlock,
+	writeObjToFilePromise
 }
 
 module.exports = JsonBackupTools;

@@ -2,7 +2,9 @@ const RabbitMqConsumer = require("../rabbitmq/rabbitmq_consumer.js");
 const config = require('../config/index.js');
 const polkadotNodeWsUrl = config.polkadotNodeWsUrl;
 const polkadotNodeHttpUrl = config.polkadotNodeHttpUrl;
+const persistenceFilePathRelative = config.persistenceFilePathRelative;
 const rmrkBackupInterval = config.rmrkBackupInterval;
+
 const MyUtils = require("../utils/MyUtils");
 const moment = require("moment");
 const path = require("path");
@@ -27,7 +29,7 @@ class RmrkService {
 		this.getNFTIdsByOwnerAddress = this.getNFTIdsByOwnerAddress.bind(this);
 
 		this.loopSaving = false;
-		this.persistenceFilePath = path.join(require.main.path, "nft-status.json"); //todo: 需要更好的持久化管理方案
+		this.persistenceFilePath = path.join(require.main.path, persistenceFilePathRelative); //todo: 需要更好的持久化管理方案
 		this.curBlockNo = 0;
 	}
 
@@ -110,7 +112,7 @@ class RmrkService {
 
 	async getNFTIdsByOwnerAddress(address) {
 		//todo: this is not a efficient implement of query nfts by owner
-		
+
 		//let nftIds = await DaoNFT.getNFTIdsByOwner(address);
 		let allNfts = await InitWorldAdapter.getInstance().getAllNFTs();
 		let nftIds = [];

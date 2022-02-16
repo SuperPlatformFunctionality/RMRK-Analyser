@@ -2,6 +2,7 @@ const lodash = require("lodash");
 const moment = require("moment");
 const fs = require("fs");
 const fsPromises = require('fs/promises');
+const MyUtils = require("../utils/MyUtils");
 
 //InMemoryAdapter is copy of InMemoryAdapter in rmrk-tools
 //because InMemoryAdapter can not be exported from rmrk-tools
@@ -170,12 +171,18 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 			lastBlock:lastBlock
 		};
 
+		MyUtils.displayCurMemoryUsage("before deep clone : ");
 		//deep clone curStatus
 		let curStatusImage = lodash.cloneDeep(curStatus);
+		MyUtils.displayCurMemoryUsage("after deep clone : ");
 
 		//todo : need to support big json file, write to file
+		MyUtils.displayCurMemoryUsage("before writing to file : ");
 		await fsPromises.writeFile(filePath, JSON.stringify(curStatusImage));
+		MyUtils.displayCurMemoryUsage("after writing to file : ");
 
+		curStatusImage = null;
+		MyUtils.displayCurMemoryUsage("after cloned object gc : ");
 		let loadingDuration = (moment().unix() - startTs) / 1000;
 		console.log(`finish to save RMRK2 status ${filePath}, use ${loadingDuration} seconds`);
 	}

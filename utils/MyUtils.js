@@ -1,7 +1,6 @@
-﻿
-
-let fs = require("fs");
+﻿let fs = require("fs");
 let path = require("path");
+const process = require("process");
 
 let appendStrToFile = function(theStr, fileName) {
     fs.appendFile(path.join(__dirname, fileName), "\r\n" + theStr, function(err) {
@@ -32,10 +31,25 @@ let getRandomNumbericString = function(len) {
 	return code;
 }
 
+
+let byteFormat = function(bytes) {
+	return (bytes/1024/1024).toFixed(2)+'MB';
+};
+let displayCurMemoryUsage = function(preMsg) {
+	let mem = process.memoryUsage();
+	console.log(preMsg + "\n" +
+				'rss :' + byteFormat(mem.rss) + "\n" +
+				'heapTotal:' + byteFormat(mem.heapTotal) + "\n" +
+				'heapUsed :' + byteFormat(mem.heapUsed) + "\n" +
+				'external :' + byteFormat(mem.external) + "\n" +
+				'arrayBuffers :' + byteFormat(mem.arrayBuffers) + "\n");
+}
+
 let MyUtils = {
 	appendStrToFile,
 	sleepForMillisecond,
-	getRandomNumbericString
+	getRandomNumbericString,
+	displayCurMemoryUsage
 }
 
 module.exports = MyUtils;

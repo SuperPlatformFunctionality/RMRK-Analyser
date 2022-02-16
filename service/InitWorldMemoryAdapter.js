@@ -3,6 +3,7 @@ const moment = require("moment");
 const fs = require("fs");
 const fsPromises = require('fs/promises');
 const MyUtils = require("../utils/MyUtils");
+const { loadPromiseNfts, loadPromiseCollections, loadPromiseBases, loadPromiseLastBlock } = require("../utils/JsonBackupTools");
 
 //InMemoryAdapter is copy of InMemoryAdapter in rmrk-tools
 //because InMemoryAdapter can not be exported from rmrk-tools
@@ -150,12 +151,21 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		//todo: need to load big json file
 		let startTs = moment().unix();
 		console.log("start to load file....");
+		/*
 		let pevStatus = require(filePath);
 		this.nfts = pevStatus.nfts ? pevStatus.nfts : {};
 		this.collections = pevStatus.collections ? pevStatus.collections : {};
 		this.bases = pevStatus.bases ? pevStatus.bases : {};
 		lastBlockInFile = pevStatus.lastBlock ? pevStatus.lastBlock : 0;
-		let loadingDuration = (moment().unix() - startTs) / 1000;
+		*/
+		this.nfts = await loadPromiseNfts(filePath);
+		this.collections = await loadPromiseCollections(filePath);
+		this.bases = await loadPromiseBases(filePath);
+		lastBlockInFile = await loadPromiseLastBlock(filePath);
+		console.log(`current tracing block number is ${lastBlockInFile}`);
+
+		let loadingDuration = moment().unix() - startTs;
+
 		console.log(`end to load file..., use ${loadingDuration} seconds`);
 
 		return lastBlockInFile;
@@ -163,6 +173,7 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 
 	async save(lastBlock, filePath) {
 		console.log(`start to save RMRK2 status ${filePath}`);
+		MyUtils.displayCurMemoryUsage("");
 		let startTs = moment().unix();
 		const curStatus = {
 			nfts: await this.getAllNFTs(),
@@ -171,20 +182,25 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 			lastBlock:lastBlock
 		};
 
-		MyUtils.displayCurMemoryUsage("before deep clone : ");
 		//deep clone curStatus
 		let curStatusImage = lodash.cloneDeep(curStatus);
 		MyUtils.displayCurMemoryUsage("after deep clone : ");
 
 		//todo : need to support big json file, write to file
-		MyUtils.displayCurMemoryUsage("before writing to file : ");
-		await fsPromises.writeFile(filePath, JSON.stringify(curStatusImage));
+		let fileContent = JSON.stringify(curStatusImage);
+		await fsPromises.writeFile(filePath, fileContent);
 		MyUtils.displayCurMemoryUsage("after writing to file : ");
 
 		curStatusImage = null;
+		fileContent = null;
 		MyUtils.displayCurMemoryUsage("after cloned object gc : ");
-		let loadingDuration = (moment().unix() - startTs) / 1000;
+		let loadingDuration = moment().unix() - startTs;
 		console.log(`finish to save RMRK2 status ${filePath}, use ${loadingDuration} seconds`);
+
+		for(let i = 0 ; i < 9 ; i++) {
+			await MyUtils.sleepForMillisecond(5000);
+			MyUtils.displayCurMemoryUsage("after 5 seconds later ");
+		}
 	}
 
 }

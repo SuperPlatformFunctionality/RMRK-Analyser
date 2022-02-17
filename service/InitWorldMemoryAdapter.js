@@ -133,8 +133,6 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 
 	async load(filePath) {
 		let lastBlockInFile = 0;
-		//load big json file
-
 		// Check the JSON file exists and is reachable
 		let fileAccessible = false;
 		try {
@@ -143,7 +141,6 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		} catch (e) {
 			console.error(`${filePath} is not readable`);
 		}
-
 		if(!fileAccessible) {
 			return 0;
 		}
@@ -165,7 +162,6 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		console.log(`current tracing block number is ${lastBlockInFile}`);
 
 		let loadingDuration = moment().unix() - startTs;
-
 		console.log(`end to load file..., use ${loadingDuration} seconds`);
 
 		return lastBlockInFile;
@@ -182,16 +178,18 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 			lastBlock:lastBlock
 		};
 
-		//deep clone curStatus
-		let curStatusImage = lodash.cloneDeep(curStatus);
-		MyUtils.displayCurMemoryUsage("after deep clone : ");
+		{
+			//deep clone curStatus
+			let curStatusImage = lodash.cloneDeep(curStatus);
+			MyUtils.displayCurMemoryUsage("after deep clone : ");
 
-		//todo : need to support big json file, write to file
-		await writeObjToFilePromise(filePath, curStatusImage);
-		MyUtils.displayCurMemoryUsage("after writing to file : ");
+			await writeObjToFilePromise(filePath, curStatusImage);
+			MyUtils.displayCurMemoryUsage("after writing to file : ");
 
-		curStatusImage = null;
-		MyUtils.displayCurMemoryUsage("after cloned object gc : ");
+			curStatusImage = null;
+			MyUtils.displayCurMemoryUsage("after cloned object gc : ");
+		}
+
 		let loadingDuration = moment().unix() - startTs;
 		console.log(`finish to save RMRK2 status ${filePath}, use ${loadingDuration} seconds`);
 

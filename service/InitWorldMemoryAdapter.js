@@ -197,7 +197,7 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 
 		for(let i = 0 ; i < 5 ; i++) {
 			await MyUtils.sleepForMillisecond(2000);
-			MyUtils.displayCurMemoryUsage("after 5 seconds later ");
+			MyUtils.displayCurMemoryUsage("after 2 seconds later ");
 		}
 	}
 

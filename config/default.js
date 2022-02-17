@@ -7,7 +7,7 @@ module.exports = {
 	polkadotNodeHttpUrl:"http://127.0.0.1:9933",
 	ss58Format:2, //0-polkadot, 2-kusama, 42-substract network
 	persistenceFilePathRelative:"../nft-status.json",
-	rmrkBackupInterval:0.2, //minutes
+	rmrkBackupInterval:1, //minutes
 	blockChain:{
 
 	},

@@ -184,9 +184,13 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 			MyUtils.displayCurMemoryUsage("after deep clone : ");
 
 			await writeObjToFilePromise(filePath, curStatusImage);
+			let filePathBak = filePath+"_bak";
+			await fsPromises.rm(filePathBak, {force:true});
+			await fsPromises.copyFile(filePath, filePathBak);
+
 			MyUtils.displayCurMemoryUsage("after writing to file : ");
 
-			curStatusImage = null;
+			curStatusImage = {};
 			MyUtils.displayCurMemoryUsage("after cloned object gc : ");
 		}
 

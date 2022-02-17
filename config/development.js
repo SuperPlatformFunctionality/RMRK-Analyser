@@ -3,7 +3,9 @@
 module.exports = {
 	port: 26080,
 	polkadotNodeWsUrl:"ws://10.128.0.120:9944",
+//	polkadotNodeWsUrl:"wss://kusama.api.onfinality.io/ws?apikey=26067ef8-9907-4259-96e2-59c63ed8d1a8",
 	polkadotNodeHttpUrl:"http://10.128.0.120:9933",
+//	polkadotNodeHttpUrl:"https://kusama.api.onfinality.io/rpc?apikey=26067ef8-9907-4259-96e2-59c63ed8d1a8",
 	ss58Format:2, //0-polkadot, 2-kusama, 42-substract network
 	persistenceFilePathRelative:"nft-status.json",
 	rmrkBackupInterval:30, //minutes

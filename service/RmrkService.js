@@ -34,7 +34,7 @@ class RmrkService {
 	}
 
 	async onReceiveRmrkMsg(msgObj) {
-//		console.log("received msg:", msgObj);
+		console.log("received RMRK msg:", msgObj);
 		let oneRmrk = msgObj;
 		if(oneRmrk.block < this.curBlockNo) {
 			console.log(`current block number is ${this.curBlockNo}, the received rmrk comes from block ${oneRmrk.block}, it should be processed already`);

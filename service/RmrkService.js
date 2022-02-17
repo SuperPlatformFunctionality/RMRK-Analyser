@@ -91,7 +91,7 @@ class RmrkService {
 			} catch (e) {
 				console.log(`some error occur in save nft rmrk status...`, e);
 			}
-			await MyUtils.sleepForMillisecond(30 * 1000);
+			await MyUtils.sleepForMillisecond(18 * 1000);
 		}
 	}
 

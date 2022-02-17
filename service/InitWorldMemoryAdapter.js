@@ -195,8 +195,8 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		let loadingDuration = moment().unix() - startTs;
 		console.log(`finish to save RMRK2 status ${filePath}, use ${loadingDuration} seconds`);
 
-		for(let i = 0 ; i < 9 ; i++) {
-			await MyUtils.sleepForMillisecond(5000);
+		for(let i = 0 ; i < 5 ; i++) {
+			await MyUtils.sleepForMillisecond(2000);
 			MyUtils.displayCurMemoryUsage("after 5 seconds later ");
 		}
 	}

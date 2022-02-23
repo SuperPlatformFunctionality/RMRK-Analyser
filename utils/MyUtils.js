@@ -38,11 +38,11 @@ let byteFormat = function(bytes) {
 let displayCurMemoryUsage = function(preMsg) {
 	let mem = process.memoryUsage();
 	console.log(preMsg + "\n" +
-				'rss :' + byteFormat(mem.rss) + "\n" +
-				'heapTotal:' + byteFormat(mem.heapTotal) + "\n" +
-				'heapUsed :' + byteFormat(mem.heapUsed) + "\n" +
-				'external :' + byteFormat(mem.external) + "\n" +
-				'arrayBuffers :' + byteFormat(mem.arrayBuffers) + "\n");
+				'rss:' + byteFormat(mem.rss) + "," +
+				'heapTotal:' + byteFormat(mem.heapTotal) + "," +
+				'heapUsed:' + byteFormat(mem.heapUsed) + "," +
+				'external:' + byteFormat(mem.external) + "," +
+				'arrayBuffers:' + byteFormat(mem.arrayBuffers));
 }
 
 let MyUtils = {

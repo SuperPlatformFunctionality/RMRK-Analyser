@@ -129,22 +129,68 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 
 	constructor() {
 		super();
-		this.address2NftsOwned = {};
+		this.address2RootOwnedNftIds = {};
+	}
+
+	async _addRootOwnerNftId(rootOwner, nftId, displayLog = true) {
+		if(displayLog) {
+			console.log(nftId, "added to ownership list of", rootOwner);
+		}
+		if (this.address2RootOwnedNftIds[rootOwner] == null) {
+			this.address2RootOwnedNftIds[rootOwner] = []
+		}
+		let isExist = false;
+		for(let i = 0 ; i < this.address2RootOwnedNftIds[rootOwner].length ; i++) {
+			let tempId = this.address2RootOwnedNftIds[rootOwner][i];
+			if(tempId == nftId) {
+				isExist = true;
+				break;
+			}
+		}
+		if(!isExist) {
+			this.address2RootOwnedNftIds[rootOwner].push(nftId);
+		}
+	}
+
+	async _removeRootOwnerNFtId(rootOwner, nftId, displayLog) {
+		if(displayLog) {
+			console.log(nftId, "removed from ownership list of", rootOwner);
+		}
+		if(this.address2RootOwnedNftIds[rootOwner] == null) {
+			return;
+		}
+		const tgtIndex = this.address2RootOwnedNftIds[rootOwner].findIndex((tempId) => tempId === nftId);
+		if (tgtIndex > -1) {
+			this.address2RootOwnedNftIds[rootOwner].splice(tgtIndex, 1);
+		}
+	}
+
+	async _moveNftFromOneRootOwnerToAnother(oldRootOwner, newRootOwner, nftId) {
+		console.log(nftId, "rootowner", oldRootOwner, "->", newRootOwner);
+		if(oldRootOwner != newRootOwner) {
+			await this._addRootOwnerNftId(newRootOwner, nftId);
+			await this._removeRootOwnerNFtId(oldRootOwner, nftId);
+		}
 	}
 
 	async updateNFTMint(nft) {
 		await super.updateNFTMint(nft);
+		await this._addRootOwnerNftId(nft.rootowner, nft.getId());
 	}
 
 	async updateNFTBuy(nft, consolidatedNFT) {
 		await super.updateNFTBuy(nft, consolidatedNFT);
+		await this._moveNftFromOneRootOwnerToAnother(consolidatedNFT.rootowner, nft.rootowner, consolidatedNFT.id);
 	}
+
 	async updateNFTSend(nft, consolidatedNFT) {
 		await super.updateNFTSend(nft, consolidatedNFT);
+		await this._moveNftFromOneRootOwnerToAnother(consolidatedNFT.rootowner, nft.rootowner, consolidatedNFT.id);
 	}
 
 	async getNftIdsByAddress(address) {
-		let nftIds = this.address2NftsOwned[address] || [];
+//		console.log(this.address2RootOwnedNftIds);
+		let nftIds = this.address2RootOwnedNftIds[address] || [];
 		return nftIds;
 	}
 
@@ -181,15 +227,11 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		let loadingDuration = moment().unix() - startTs;
 		console.log(`end to load file..., use ${loadingDuration} seconds`);
 
-
 		let allNfts = this.nfts;
 		let count = 0;
 		for(let tempNtfId in allNfts) {
 			let theRootOwner = allNfts[tempNtfId].rootowner;
-			if (this.address2NftsOwned[theRootOwner] == null) {
-				this.address2NftsOwned[theRootOwner] = []
-			}
-			this.address2NftsOwned[theRootOwner].push(tempNtfId);
+			await this._addRootOwnerNftId(theRootOwner, tempNtfId, false);
 			count++;
 		}
 		console.log(`address to nfts owned by him formed, in total ${count} addresses get nft`);

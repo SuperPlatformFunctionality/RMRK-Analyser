@@ -129,6 +129,23 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 
 	constructor() {
 		super();
+		this.address2NftsOwned = {};
+	}
+
+	async updateNFTMint(nft) {
+		await super.updateNFTMint(nft);
+	}
+
+	async updateNFTBuy(nft, consolidatedNFT) {
+		await super.updateNFTBuy(nft, consolidatedNFT);
+	}
+	async updateNFTSend(nft, consolidatedNFT) {
+		await super.updateNFTSend(nft, consolidatedNFT);
+	}
+
+	async getNftIdsByAddress(address) {
+		let nftIds = this.address2NftsOwned[address] || [];
+		return nftIds;
 	}
 
 	async load(filePath) {
@@ -164,6 +181,18 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		let loadingDuration = moment().unix() - startTs;
 		console.log(`end to load file..., use ${loadingDuration} seconds`);
 
+
+		let allNfts = this.nfts;
+		let count = 0;
+		for(let tempNtfId in allNfts) {
+			let theRootOwner = allNfts[tempNtfId].rootowner;
+			if (this.address2NftsOwned[theRootOwner] == null) {
+				this.address2NftsOwned[theRootOwner] = []
+			}
+			this.address2NftsOwned[theRootOwner].push(tempNtfId);
+			count++;
+		}
+		console.log(`address to nfts owned by him formed, in total ${count} addresses get nft`);
 		return lastBlockInFile;
 	}
 

@@ -91,7 +91,7 @@ class RmrkService {
 			} catch (e) {
 				console.log(`some error occur in save nft rmrk status...`, e);
 			}
-			await MyUtils.sleepForMillisecond(18 * 1000);
+			await MyUtils.sleepForMillisecond(20 * 1000);
 		}
 	}
 
@@ -112,18 +112,8 @@ class RmrkService {
 
 	async getNFTIdsByOwnerAddress(address) {
 		//todo: this is not a efficient implement of query nfts by owner
-
 		//let nftIds = await DaoNFT.getNFTIdsByOwner(address);
-		let allNfts = await InitWorldAdapter.getInstance().getAllNFTs();
-		let nftIds = [];
-		let count = 0;
-		for(let tempNtfId in allNfts) {
-			if(allNfts[tempNtfId].rootowner == address) {
-				nftIds.push(allNfts[tempNtfId].id);
-			}
-			count++;
-		}
-		console.log(`allNfts count is ${count}`);
+		let nftIds = await InitWorldAdapter.getInstance().getNftIdsByAddress(address);
 		return nftIds;
 	}
 }

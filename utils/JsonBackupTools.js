@@ -100,12 +100,15 @@ const writeObjToFilePromise = async function(outputFilePath, jsonObj) {
 		});
 
 		ws.on("error", async function(error) {
-			console.error("writeObjToFilePromise", error);
+			console.error("writeObjToFilePromise error callback", error);
 			reject(error);
 		});
 //		let startTs = moment().unix();
 		ws.write(fileContent, function(e) {
-			console.log(e,"write stream flushed...\n");
+			console.log("write stream flushed...\n");
+			if(e) {
+				console.error("writeObjToFilePromise write error:", e);
+			}
 		});
 //		let loadingDuration = moment().unix() - startTs;
 //		console.log("inner calling..., ", loadingDuration , "seconds\n");

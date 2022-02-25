@@ -139,15 +139,16 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		if (this.address2RootOwnedNftIds[rootOwner] == null) {
 			this.address2RootOwnedNftIds[rootOwner] = []
 		}
-		let isExist = false;
+
+		let inAlready = false;
 		for(let i = 0 ; i < this.address2RootOwnedNftIds[rootOwner].length ; i++) {
 			let tempId = this.address2RootOwnedNftIds[rootOwner][i];
 			if(tempId == nftId) {
-				isExist = true;
+				inAlready = true;
 				break;
 			}
 		}
-		if(!isExist) {
+		if(!inAlready) {
 			this.address2RootOwnedNftIds[rootOwner].push(nftId);
 		}
 	}
@@ -165,11 +166,35 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		}
 	}
 
+	//query all children nft id and grand-children and grand-grant-children and .....
+	_findAllChildrenNftIds(nftId, level) {
+		let nft = this.nfts[nftId];
+		let children = [];
+		if ((level || 1) < 12 && nft.children && nft.children.length > 0) {
+			nft.children.map(async (child) => {
+				let _a, _b;
+				if (((_a = this.nfts[child.id]) === null || _a === void 0 ? void 0 : _a.children) &&
+					((_b = this.nfts[child.id]) === null || _b === void 0 ? void 0 : _b.children.length) > 0) {
+					children = children.concat(this._findAllChildrenNftIds(child.id,  (level || 1) + 1));
+				}
+				children.push(child.id);
+			});
+		}
+		return children;
+	}
+
 	async _moveNftFromOneRootOwnerToAnother(oldRootOwner, newRootOwner, nftId) {
 		console.log(nftId, "rootowner", oldRootOwner, "->", newRootOwner);
 		if(oldRootOwner != newRootOwner) {
 			await this._addRootOwnerNftId(newRootOwner, nftId);
 			await this._removeRootOwnerNFtId(oldRootOwner, nftId);
+
+			let allChildrenIds = this._findAllChildrenNftIds(nftId);
+			for(let i = 0; i < allChildrenIds.length; i++) {
+				let childId = allChildrenIds[i];
+				await this._addRootOwnerNftId(newRootOwner, childId);
+				await this._removeRootOwnerNFtId(oldRootOwner, childId);
+			}
 		}
 	}
 
@@ -234,7 +259,7 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 			await this._addRootOwnerNftId(theRootOwner, tempNtfId, false);
 			count++;
 		}
-		console.log(`address to nfts owned by him formed, in total ${count} addresses get nft`);
+		console.log(`form address to nft list of his root-ownership, in total ${count} addresses get nft`);
 		return lastBlockInFile;
 	}
 

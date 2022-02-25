@@ -190,6 +190,7 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 			await this._removeRootOwnerNFtId(oldRootOwner, nftId);
 
 			let allChildrenIds = this._findAllChildrenNftIds(nftId);
+			//console.log("allChildrenIds", allChildrenIds);
 			for(let i = 0; i < allChildrenIds.length; i++) {
 				let childId = allChildrenIds[i];
 				await this._addRootOwnerNftId(newRootOwner, childId);
@@ -214,7 +215,7 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 	}
 
 	async getNftIdsByAddress(address) {
-//		console.log(this.address2RootOwnedNftIds);
+		//console.log(this.address2RootOwnedNftIds);
 		let nftIds = this.address2RootOwnedNftIds[address] || [];
 		return nftIds;
 	}
@@ -236,13 +237,6 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		//todo: need to load big json file
 		let startTs = moment().unix();
 		console.log("start to load file....");
-		/*
-		let pevStatus = require(filePath);
-		this.nfts = pevStatus.nfts ? pevStatus.nfts : {};
-		this.collections = pevStatus.collections ? pevStatus.collections : {};
-		this.bases = pevStatus.bases ? pevStatus.bases : {};
-		lastBlockInFile = pevStatus.lastBlock ? pevStatus.lastBlock : 0;
-		*/
 		this.nfts = await loadPromiseNfts(filePath);
 		this.collections = await loadPromiseCollections(filePath);
 		this.bases = await loadPromiseBases(filePath);
@@ -292,13 +286,6 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 
 		let loadingDuration = moment().unix() - startTs;
 		console.log(`finish to save RMRK2 status ${filePath}, use ${loadingDuration} seconds`);
-
-		/*
-		for(let i = 0 ; i < 5 ; i++) {
-			await MyUtils.sleepForMillisecond(2000);
-			MyUtils.displayCurMemoryUsage("after 2 seconds later ");
-		}
-		*/
 	}
 
 }

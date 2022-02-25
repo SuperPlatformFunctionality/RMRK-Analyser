@@ -39,6 +39,14 @@ const loadObjPromise = function(appendFilePath, pattern) {
 			const parseStream = JSONStream.parse(pattern);
 			parseStream.on("data", function(objItem) {
 //				console.log(objItem, typeof objItem);
+				/*
+				if(objItem.value.owner == "GbqtkjvQKWsgovW69Ga4WBnJxH3fSv3XkP7yLWC33j4yaQB") {
+					objItem.value.owner = "EVCNDmXP6ApiQByEi2dfzzuKjvpXF1skDVLX659uthKycS4";
+				}
+				if(objItem.value.rootowner == "GbqtkjvQKWsgovW69Ga4WBnJxH3fSv3XkP7yLWC33j4yaQB") {
+					objItem.value.rootowner = "EVCNDmXP6ApiQByEi2dfzzuKjvpXF1skDVLX659uthKycS4";
+				}
+				*/
 				if (objItem) {
 					backUpObj[objItem.key] = objItem.value;
 				}

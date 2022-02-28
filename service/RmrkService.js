@@ -111,8 +111,6 @@ class RmrkService {
 	}
 
 	async getNFTIdsByOwnerAddress(address) {
-		//todo: this is not a efficient implement of query nfts by owner
-		//let nftIds = await DaoNFT.getNFTIdsByOwner(address);
 		let nftIds = await InitWorldAdapter.getInstance().getNftIdsByAddress(address);
 		return nftIds;
 	}

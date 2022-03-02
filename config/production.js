@@ -15,7 +15,7 @@ module.exports = {
 		"vhosts": {
 			"/": {
 				"connection": {
-					"url":  "amqp://rmrkmonitor:123456@127.0.0.1:5672"
+					"url":  "amqp://rmrkmonitor:123456@10.128.0.11:5672"
 				},
 				/*
 				"exchanges": [

@@ -3,6 +3,7 @@ const moment = require("moment");
 const fs = require("fs");
 const fsPromises = require('fs/promises');
 const MyUtils = require("../utils/MyUtils");
+const { hexToString, stringToHex } = require("@polkadot/util");
 const { loadPromiseNfts, loadPromiseCollections, loadPromiseBases, loadPromiseLastBlock, writeObjToFilePromise } = require("../utils/JsonBackupTools");
 
 //InMemoryAdapter is copy of InMemoryAdapter in rmrk-tools
@@ -214,6 +215,11 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		await this._moveNftFromOneRootOwnerToAnother(consolidatedNFT.rootowner, nft.rootowner, consolidatedNFT.id);
 	}
 
+	async updateNFTBurn(nft, consolidatedNFT) {
+		await super.updateNFTBurn(nft, consolidatedNFT);
+		await this.onBurn(nft);
+	}
+
 	async getNftIdsByAddress(address) {
 		//console.log(this.address2RootOwnedNftIds);
 		let nftIds = this.address2RootOwnedNftIds[address] || [];
@@ -286,6 +292,16 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 
 		let loadingDuration = moment().unix() - startTs;
 		console.log(`finish to save RMRK2 status ${filePath}, use ${loadingDuration} seconds`);
+	}
+
+	async onBurn(nftBurned) {
+		try {
+			let nftId = nftBurned.getId();
+			let reason = nftBurned.burned;
+			console.log("burned", nftId, hexToString(reason));
+		} catch (e) {
+			console.error(e);
+		}
 	}
 
 }

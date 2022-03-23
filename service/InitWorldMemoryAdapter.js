@@ -5,6 +5,7 @@ const fsPromises = require('fs/promises');
 const MyUtils = require("../utils/MyUtils");
 const { hexToString, stringToHex } = require("@polkadot/util");
 const { loadPromiseNfts, loadPromiseCollections, loadPromiseBases, loadPromiseLastBlock, writeObjToFilePromise } = require("../utils/JsonBackupTools");
+const notifyService = require("./NotifyService");
 
 //InMemoryAdapter is copy of InMemoryAdapter in rmrk-tools
 //because InMemoryAdapter can not be exported from rmrk-tools
@@ -297,8 +298,29 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 	async onBurn(nftBurned) {
 		try {
 			let nftId = nftBurned.getId();
-			let reason = nftBurned.burned;
+			let reason = hexToString(nftBurned.burned);
 			console.log("burned", nftId, hexToString(reason));
+
+			const [_initwdPre, _version, op_type, nftType, paramData] = reason.split("::");
+			if(_initwdPre != "INITWD") {
+				return;
+			}
+			if(_version != "1.0.0") {
+				return;
+			}
+			if(op_type == "MYSTERYBOX_SWAPKEY") {
+				let orderId = paramData;
+				let swapMsg = {
+					orderId:orderId,
+					nftId:nftId,
+					nftType:nftType
+				}
+
+				//need to await?
+				await notifyService.doNotifyBurn(nftId, reason);
+			}
+
+
 		} catch (e) {
 			console.error(e);
 		}

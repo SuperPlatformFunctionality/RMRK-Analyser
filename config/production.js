@@ -44,5 +44,6 @@ module.exports = {
 				}
 			}
 		}
-	}
+	},
+	SalesmanHost:"http://10.128.0.11:27080"
 }

@@ -299,10 +299,11 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		try {
 			let nftId = nftBurned.getId();
 			let reason = hexToString(nftBurned.burned);
-			console.log("burned", nftId, hexToString(reason));
+			let address = nftBurned.rootowner;
+			console.log("burned", nftId, hexToString(reason), address);
 			if(reason.startsWith("INITWD")) {
 				//need to await?
-				await notifyService.doNotifyBurn(nftId, reason);
+				await notifyService.doNotifyBurn(nftId, reason, address);
 			}
 		} catch (e) {
 			console.error(e);

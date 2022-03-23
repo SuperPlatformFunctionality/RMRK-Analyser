@@ -7,13 +7,14 @@ class NotifyService {
 		this.doNotifyBurn = this.doNotifyBurn.bind(this);
 	}
 
-	async doNotifyBurn(nftId, reason) {
+	async doNotifyBurn(nftId, reason, address) {
 		const accessKey = "55ef6100e7cac696648a78688f664f014836b03a261873f4ff78701745e6f14u";
 		let data = {
 			accessKey:accessKey,
 			op:"burn",
 			nftId : nftId,
-			reason : reason
+			reason : reason,
+			address: address
 		}
 		let ret = null;
 		try {

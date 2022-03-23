@@ -300,27 +300,10 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 			let nftId = nftBurned.getId();
 			let reason = hexToString(nftBurned.burned);
 			console.log("burned", nftId, hexToString(reason));
-
-			const [_initwdPre, _version, op_type, nftType, paramData] = reason.split("::");
-			if(_initwdPre != "INITWD") {
-				return;
-			}
-			if(_version != "1.0.0") {
-				return;
-			}
-			if(op_type == "MYSTERYBOX_SWAPKEY") {
-				let orderId = paramData;
-				let swapMsg = {
-					orderId:orderId,
-					nftId:nftId,
-					nftType:nftType
-				}
-
+			if(reason.startsWith("INITWD")) {
 				//need to await?
 				await notifyService.doNotifyBurn(nftId, reason);
 			}
-
-
 		} catch (e) {
 			console.error(e);
 		}

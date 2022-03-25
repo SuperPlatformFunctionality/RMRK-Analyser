@@ -218,11 +218,11 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 
 	async updateNFTBurn(nft, consolidatedNFT) {
 		await super.updateNFTBurn(nft, consolidatedNFT);
+		await this._removeRootOwnerNFtId(nft.rootowner, nft.getId());
 		await this.onBurn(nft);
 	}
 
 	async getNftIdsByAddress(address) {
-		//console.log(this.address2RootOwnedNftIds);
 		let nftIds = this.address2RootOwnedNftIds[address] || [];
 		return nftIds;
 	}
@@ -256,8 +256,11 @@ class InitWorldMemoryAdapter extends InMemoryAdapter {
 		let allNfts = this.nfts;
 		let count = 0;
 		for(let tempNtfId in allNfts) {
-			let theRootOwner = allNfts[tempNtfId].rootowner;
-			await this._addRootOwnerNftId(theRootOwner, tempNtfId, false);
+			if(allNfts[tempNtfId].burned == null ||
+				allNfts[tempNtfId].burned == "") {
+				let theRootOwner = allNfts[tempNtfId].rootowner;
+				await this._addRootOwnerNftId(theRootOwner, tempNtfId, false);
+			}
 			count++;
 		}
 		console.log(`form address to nft list of his root-ownership, in total ${count} addresses get nft`);

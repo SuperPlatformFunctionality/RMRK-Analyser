@@ -5,7 +5,7 @@ module.exports = {
     instances: 1 ,
     autorestart: true,
     watch: false,
-    max_memory_restart: '1920M',
+    max_memory_restart: '5760M',
 	log_date_format:"YYYY-MM-DD HH:mm:ss",
     env_development: {
       NODE_ENV: 'development'

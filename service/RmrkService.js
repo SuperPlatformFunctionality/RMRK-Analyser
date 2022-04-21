@@ -71,9 +71,10 @@ class RmrkService {
 		await RabbitMqConsumer.initConsumer();
 
 		//do not
-		that.startIntervalRMRKStatusPersistent().then(function () {
+/*		that.startIntervalRMRKStatusPersistent().then(function () {
 			console.log(`startIntervalRMRKStatusPersistent loop stopped...`);
 		});
+*/
 	}
 
 	async startIntervalRMRKStatusPersistent() {
